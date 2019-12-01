@@ -1,14 +1,14 @@
 """
 Module Docstring Placeholder
-"""
-
 import os
 import time
 import random
+"""
 
-from feature_extraction import ArticleVector
 import numpy as np
 import sklearn
+
+from feature_extraction import ArticleVector
 
 #Following is somewhat unnecessary, but may be useful if we ever separate the data.
 
@@ -147,10 +147,11 @@ def load_data(training_dict, cap=0):
             training_data.append(data[i])
         current.close()
 
+    training_data = [[float(i) for i in j] for _, j in enumerate(training_data)]
     #convert to int
-    for i in range(len(training_data)):
-        for j in range(len(training_data[i])):
-            training_data[i][j] = float(training_data[i][j])
+    #for i in range(len(training_data)):
+    #    for j in range(len(training_data[i])):
+    #        training_data[i][j] = float(training_data[i][j])
     return training_data, labels
 
 TRAINING_FILE_DICT = {'real_news_vectors-training.txt' : 1,
@@ -174,24 +175,27 @@ def retrieve_data(file_dict, cap):
 
     print('Retreiving data...')
     training_data = load_data(file_dict, cap)
-    X = training_data[0]
-    Y = training_data[1]
-    return X, Y
+    data_x = training_data[0]
+    data_y = training_data[1]
+    return data_x, data_y
 
-def svm_classifier(X_feature_matrix, Y_labels):
+def svm_classifier(x_feature_matrix, y_labels):
+    """
+    Method Docstring Placeholder
+    """
     support_vector_machine = sklearn.svm.SVC(gamma='scale')
-    support_vector_machine.fit(X_feature_matrix, Y_labels)
+    support_vector_machine.fit(x_feature_matrix, y_labels)
     return support_vector_machine
 
-def run_predictions(trained_classifier, test_X, test_Y):
+def run_predictions(trained_classifier, test_x):
     '''
     trained_classifier - a trained classifier from sklearn
-    test_X - feature matrix for testing the classifier
-    test_Y - list of labels that correspond to test_X
+    test_x - feature matrix for testing the classifier
+    test_y - list of labels that correspond to test_x
     '''
     predictions = []
-    for vector in test_X:
+    for vector in test_x:
         predictions.append(trained_classifier.predict(np.array(vector).reshape(1, -1)))
     return predictions
 
-#validate(support_vector_machine, test_X, test_Y)
+#validate(support_vector_machine, test_x, test_y)
