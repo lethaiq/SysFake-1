@@ -97,7 +97,8 @@ def get_statistics(true_Y, predictions):
 ####Support Vector Machine#####
 ###############################
 support_vector_machine = classifier.svm_classifier(train_X_uncombined, train_Y_uncombined)
-svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined, test_Y_uncombined)
+svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined)
+#svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined, test_Y_uncombined)
 get_statistics(test_Y_uncombined, svm_predictions)
 validate(support_vector_machine, test_X_uncombined, test_Y_uncombined)
 
