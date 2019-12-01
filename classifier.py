@@ -1,3 +1,7 @@
+"""
+Module Docstring Placeholder
+"""
+
 import os
 import time
 import random
@@ -9,27 +13,40 @@ import sklearn
 #Following is somewhat unnecessary, but may be useful if we ever separate the data.
 
 #each filename should be a file containing article urls separated by spaces.
-training_file_dict = {'real_news_urls-training.txt' : 1,'fake_news_urls-training.txt' : 2,'opinion_urls-training.txt' : 3,
-                    'polarized_news_urls-training.txt' : 5,'satire_urls-training.txt' : 7}
-testing_file_dict = {'real_news_urls-testing.txt' : 1,'fake_news_urls-testing.txt' : 2,'opinion_urls-testing.txt' : 3,
-                    'polarized_news_urls-testing.txt' : 5,'satire_urls-testing.txt' : 7}
+TRAINING_FILE_DICT = {'real_news_urls-training.txt' : 1,
+                      'fake_news_urls-training.txt' : 2,
+                      'opinion_urls-training.txt' : 3,
+                      'polarized_news_urls-training.txt' : 5,
+                      'satire_urls-training.txt' : 7}
+
+TESTING_FILE_DICT = {'real_news_urls-testing.txt' : 1,
+                     'fake_news_urls-testing.txt' : 2,
+                     'opinion_urls-testing.txt' : 3,
+                     'polarized_news_urls-testing.txt' : 5,
+                     'satire_urls-testing.txt' : 7}
 
 def extract_data(filename, label):
+    """
+    Method Docstring Placeholder
+    """
     data = extract_urls(filename)
-    data_X = []
+    data_x = []
     count = 0
     for url in data[400: 800]:
         count += 1
-        print('Current url:', url , '|| Visited', count, 'websites...')
+        print('Current url:', url, '|| Visited', count, 'websites...')
         try:
-            data_X.append(ArticleVector(url).vector)
-        except:
+            data_x.append(ArticleVector(url).vector)
+        except: #pylint: disable=W0702
             print('IT FAILED')
             continue
-    data_Y = [label] * len(data_X)
-    return data_X, data_Y #list of lists, list
+    data_y = [label] * len(data_x)
+    return data_x, data_y #list of lists, list
 
 def count_lines(filename):
+    """
+    Method Docstring Placeholder
+    """
     file = open(filename, 'r')
     lines = file.readlines()
     print(len(lines))
@@ -43,8 +60,10 @@ def write_feature_matrix_to_file(matrix, labels, write_file):
     '''
     file = open(write_file, 'a')
     assert len(matrix) == len(labels), 'len of list of feature matrices != len of list of labels'
-    for i in range(len(matrix)):
+
+    for i, _ in enumerate(matrix):
         matrix[i].append(labels[i])
+
     for vector in matrix:
         file.write('\n')
         for element in vector:
@@ -66,7 +85,7 @@ def prepare_data(file_dict):
 
     -basically returns complete_X and complete_Y
     '''
-    
+
     feature_matrices = [] #List of feature vectors
     feature_labels = []
     for filename in file_dict:
@@ -79,13 +98,13 @@ def prepare_data(file_dict):
     return feature_matrices, feature_labels
 
 
-#training_data = prepare_data(training_file_dict)
-#testing_data = prepare_data(testing_file_dict)
-#training_data_X = training_data[0]
-#training_data_Y = training_data[1]
-#testing_data_X = testing_data[0]
-#testing_data_Y = testing_data[1]
-#write_feature_matrix_to_file(training_data_X, training_data_Y, 'satire_vectors-testing.txt')
+#training_data = prepare_data(TRAINING_FILE_DICT)
+#testing_data = prepare_data(TESTING_FILE_DICT)
+#training_data_x = training_data[0]
+#training_data_y = training_data[1]
+#testing_data_x = testing_data[0]
+#testing_data_y = testing_data[1]
+#write_feature_matrix_to_file(training_data_x, training_data_y, 'satire_vectors-testing.txt')
 
 #count_lines('satire_vectors-testing.txt')
 
@@ -94,7 +113,7 @@ def prepare_data(file_dict):
 
 
 
-def load_data(training_dict, cap = 0):
+def load_data(training_dict, cap=0):
     '''
     training_dict: dictionary of string:int, where string is filename int is label
     cap = max number of data points we want to extract
@@ -122,7 +141,7 @@ def load_data(training_dict, cap = 0):
             if len(data[i]) < 2:
                 continue
             data[i] = data[i].strip().split(' ')
-            assert type(data[i]) == list, 'not a list bruh'
+            assert isinstance(data[i], list), 'not a list bruh'
             data[i].pop(-1) # remove label in the text file
             labels.append(training_dict[file])
             training_data.append(data[i])
@@ -134,10 +153,17 @@ def load_data(training_dict, cap = 0):
             training_data[i][j] = float(training_data[i][j])
     return training_data, labels
 
-training_file_dict = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
-                    'polarized_news_vectors-training.txt' : 5,'satire_vectors-training.txt' : 7}
-testing_file_dict = {'real_news_vectors-testing.txt' : 1,'fake_news_vectors-testing.txt' : 2,'opinion_vectors-testing.txt' : 3,
-                    'polarized_news_vectors-testing.txt' : 5,'satire_vectors-testing.txt' : 7}
+TRAINING_FILE_DICT = {'real_news_vectors-training.txt' : 1,
+                      'fake_news_vectors-training.txt' : 2,
+                      'opinion_vectors-training.txt' : 3,
+                      'polarized_news_vectors-training.txt' : 5,
+                      'satire_vectors-training.txt' : 7}
+
+TESTING_FILE_DICT = {'real_news_vectors-testing.txt' : 1,
+                     'fake_news_vectors-testing.txt' : 2,
+                     'opinion_vectors-testing.txt' : 3,
+                     'polarized_news_vectors-testing.txt' : 5,
+                     'satire_vectors-testing.txt' : 7}
 
 
 def retrieve_data(file_dict, cap):
@@ -153,7 +179,7 @@ def retrieve_data(file_dict, cap):
     return X, Y
 
 def svm_classifier(X_feature_matrix, Y_labels):
-    support_vector_machine = sklearn.svm.SVC(gamma = 'scale')
+    support_vector_machine = sklearn.svm.SVC(gamma='scale')
     support_vector_machine.fit(X_feature_matrix, Y_labels)
     return support_vector_machine
 
@@ -169,4 +195,3 @@ def run_predictions(trained_classifier, test_X, test_Y):
     return predictions
 
 #validate(support_vector_machine, test_X, test_Y)
-
