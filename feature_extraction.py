@@ -6,24 +6,39 @@ from pyapa import pyapa
 from ap_style_checker import StyleChecker
 
 class ArticleVector:
-	'''
-	class whos purpose is to extract an article/urls vector for feature matrix
-	'''
-	NUM_DIMENSIONS = 18 # changes as unique features are added
+	"""
+    Purpose: Extract a vector of articles/urls to be stored in feature matrix
+    """
 
 	##### CLASS ATTRIBUTES #####
 
-	reputable_news_sources = open('reputable_news_sources.txt', 'r').readlines()
-	for i in range(len(reputable_news_sources)):
-		reputable_news_sources[i] = reputable_news_sources[i].replace(" ", "").lower().strip()
+    def __init__(self):
+        ##todo: assign this based on length of features in a global config
+        NUM_DIMENSIONS = 18 # changes as unique features are added
+        
+        reputable_news_sources = process_source_list("reputable_news_sources.txt")
+        
+        satire_news_sources = process_source_list("satire_news_sources.txt")
 
-	satire_news_sources = open('satire_news_sources.txt', 'r').readlines()
-	for i in range(len(satire_news_sources)):
-		satire_news_sources[i] = satire_news_sources[i].replace(" ", "").lower().strip()
-	
-	unreputable_news_sources = open('unreputable_news_sources.txt', 'r').readlines()
-	for i in range(len(unreputable_news_sources)):
-		unreputable_news_sources[i] = unreputable_news_sources[i].replace(" ", "").lower().strip()
+        unreputable_news_sources = process_source_list("unreputable_news_sources.txt")
+        
+    @staticmethod
+    def process_source_list(filename="", delimiter='\n'):
+        """
+        ===
+        Utility function to preprocess and read in items from a text file to a list.
+        This function is not performed in-place.
+        ===
+        Parameters
+        ===
+            source: str
+                File name of text to be processed and read. Defaults to an empty string.
+            delimiter: str
+                Character which separates discrete items in the text file.
+        """
+        with open(source, 'r') as filein:
+            list_before_processing = filein.readlines()
+            return [j.replace(" ", "").lower().strip() for i, j in enumerate(list_before_processing)]
 
 	def word_contains(string1, string2):
 		'''
