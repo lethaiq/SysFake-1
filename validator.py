@@ -1,8 +1,9 @@
-import classifier
-import sklearn
+import random
+
 from sklearn.metrics import recall_score, precision_score, f1_score, roc_auc_score
 import numpy as np
-import random
+import classifier
+import sklearn
 
 training_file_dict_uncombined = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
                     'polarized_news_vectors-training.txt' : 5,'satire_vectors-training.txt' : 7}

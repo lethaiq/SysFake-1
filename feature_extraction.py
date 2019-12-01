@@ -1,11 +1,12 @@
-from newspaper import Article
-from goose3 import Goose
+import os
+
 import language_check
 import nltk
-from pyapa import pyapa
-from ap_style_checker import StyleChecker
 
-import os
+from ap_style_checker import StyleChecker
+from newspaper import Article
+from goose3 import Goose
+from pyapa import pyapa
 
 class ArticleVector:
     """
@@ -15,7 +16,7 @@ class ArticleVector:
     ##### CLASS ATTRIBUTES #####
 
     def __init__(self):
-        print(os.getcwd())
+        #print(os.getcwd())
         ##todo: assign this based on length of features in a global config
         NUM_DIMENSIONS = 18 # changes as unique features are added
         
