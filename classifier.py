@@ -8,6 +8,8 @@ import random
 import numpy as np
 import sklearn
 
+from sklearn.model_selection import KFold
+
 from feature_extraction import ArticleVector
 
 #Following is somewhat unnecessary, but may be useful if we ever separate the data.
@@ -179,11 +181,11 @@ def retrieve_data(file_dict, cap):
     data_y = training_data[1]
     return data_x, data_y
 
-def svm_classifier(x_feature_matrix, y_labels):
+def svm_classifier(x_feature_matrix, y_labels, kernel='rbf', gamma="scale", random_state=0):
     """
     Method Docstring Placeholder
     """
-    support_vector_machine = sklearn.svm.SVC(gamma='scale')
+    support_vector_machine = sklearn.svm.SVC(kernel=kernel, gamma=gamma, random_state=random_state)
     support_vector_machine.fit(x_feature_matrix, y_labels)
     return support_vector_machine
 

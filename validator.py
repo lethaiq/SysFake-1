@@ -1,9 +1,12 @@
 import random
+import pickle
+import os
 
 from sklearn.metrics import recall_score, precision_score, f1_score, roc_auc_score
 import numpy as np
 import classifier
-import sklearn
+
+NUM_TRIALS = 30
 
 training_file_dict_uncombined = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
                     'polarized_news_vectors-training.txt' : 5,'satire_vectors-training.txt' : 7}
@@ -96,10 +99,12 @@ def get_statistics(true_Y, predictions):
 ###############################
 ####Support Vector Machine#####
 ###############################
-support_vector_machine = classifier.svm_classifier(train_X_uncombined, train_Y_uncombined)
+random_state = 4261998
+support_vector_machine = classifier.svm_classifier(train_X_uncombined, train_Y_uncombined, kernel='linear', gamma='scale', random_state=random_state)
 svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined)
 #svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined, test_Y_uncombined)
-get_statistics(test_Y_uncombined, svm_predictions)
+stats = get_statistics(test_Y_uncombined, svm_predictions)
+(recall, precision, f1) = *stats,
 validate(support_vector_machine, test_X_uncombined, test_Y_uncombined)
 
 # support_vector_machine_uncombined = classifier.svm_classifier(train_X_uncombined, train_Y_uncombined)
@@ -140,3 +145,8 @@ for file in testing_file_dict_uncombined:
 #     title = file[:file.index('_')]
 #     print('False negatives for', title, 'data (' + str(testing_file_dict_uncombined[file]) + ')')
 #     find_errors(support_vector_machine, file, testing_file_dict_uncombined[file])
+
+os.chdir("models")
+
+with open(f"model_kernel[{support_vector_machine.kernel}]gamma[{support_vector_machine.gamma}]rec[{np.mean(recall):{3}.{2}}]pre[{np.mean(precision):{3}.{2}}]f1[{np.mean(f1):{3}.{2}}].pickle", mode="wb") as fileout:
+    pickle.dump(support_vector_machine, fileout)
