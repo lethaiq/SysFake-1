@@ -2,9 +2,13 @@ import random
 import pickle
 import os
 
+from collections import Counter
+
 from sklearn.metrics import recall_score, precision_score, f1_score #roc_auc_score
 import numpy as np
 import classifier
+
+np.set_printoptions(precision=2)
 
 RANDOM_STATE = 4261998
 NUM_TRIALS = 30
@@ -86,7 +90,7 @@ def validate(model, X, Y):
     percent_correct = (correct / total) * 100
 
     print(statistics_dict)
-    print(f"This model got {percent_correct!s} % correct || {correct!s} out of {total!s}")
+    print(f"This model got {percent_correct!s:{5}.{5}}% correct || {correct!s} out of {total!s}")
     return percent_correct
 
 def get_statistics(true_y, predictions):
@@ -140,11 +144,16 @@ def find_errors(model, vector_data_file, label):
 
     ### the following is a rewrite of previous code from 
     ### commit 30d36b9fb1f7c7ffc18dccc40a106ad426ca4c6a on branch notebooks
-    incorrect_predictions = {labels[i]:incorrect_predictions.get(j, 0) + 1
-                             for i, j in enumerate(model_predictions)
-                             if float(j) != float(labels[i])}
+    #incorrect_predictions = {labels[i]:incorrect_predictions.get(j, 0) + 1
+    #                         for i, j in enumerate(model_predictions)}
+    #                         if float(j) != float(labels[i])
     # what does the line above do?
+    for i in range(len(model_predictions)):
+        if float(model_predictions[i]) != float(label):
+            #print(str(model_predictions[i]), str(label))
+            incorrect_predictions[model_predictions[i]] = incorrect_predictions.get(model_predictions[i], 0) + 1
 
+    incorrect_predictions = Counter()
     print(incorrect_predictions)
     return incorrect_predictions
 
@@ -158,14 +167,15 @@ def find_errors(model, vector_data_file, label):
 
 for file in TESTING_FILE_DICT_UNCOMBINED:
     title = file[:file.index('_')]
-    print('False negatives for', title, 'data (' + str(TESTING_FILE_DICT_UNCOMBINED[file]) + ')')
+    print(f"False negatives for {title} data ({TESTING_FILE_DICT_UNCOMBINED[file]!s})")
+    #print('False negatives for', title, 'data (' + str(TESTING_FILE_DICT_UNCOMBINED[file]) + ')')
     find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
 # for file in TESTING_FILE_DICT_UNCOMBINED:
 #     title = file[:file.index('_')]
 #     print('False negatives for', title, 'data (' + str(TESTING_FILE_DICT_UNCOMBINED[file]) + ')')
 #     find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
 
+# serialize and save current model
 os.chdir("models")
-
 with open(f"model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.mean(RECALL):{3}.{2}}]pre[{np.mean(PRECISION):{3}.{2}}]f1[{np.mean(F1):{3}.{2}}].pickle", mode="wb") as fileout: #pylint:disable=C0301
     pickle.dump(SUPPORT_VECTOR_MACHINE, fileout)
