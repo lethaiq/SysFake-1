@@ -2,10 +2,11 @@ import random
 import pickle
 import os
 
-from sklearn.metrics import recall_score, precision_score, f1_score, roc_auc_score
+from sklearn.metrics import recall_score, precision_score, f1_score #roc_auc_score
 import numpy as np
 import classifier
 
+RANDOM_STATE = 4261998
 NUM_TRIALS = 30
 
 training_file_dict_uncombined = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
@@ -17,18 +18,18 @@ testing_file_dict_uncombined = {'real_news_vectors-testing.txt' : 1,'fake_news_v
 testing_file_dict_combined = {'real_news_vectors-testing.txt' : 1,'fake_news_vectors-testing.txt' : 2,'opinion_vectors-testing.txt' : 3,
                     'polarized_news_vectors-testing.txt' : 3,'satire_vectors-testing.txt' : 7}
 
-train_X_combined, train_Y_combined = classifier.retrieve_data(training_file_dict_combined, 1000)
-train_X_uncombined, train_Y_uncombined = classifier.retrieve_data(training_file_dict_uncombined, 1000)
-test_X_combined, test_Y_combined = classifier.retrieve_data(testing_file_dict_combined, 225) 
-test_X_uncombined, test_Y_uncombined = classifier.retrieve_data(testing_file_dict_uncombined, 225)
+train_x_combined, train_Y_combined = classifier.retrieve_data(training_file_dict_combined, 1000)
+train_x_uncombined, train_Y_uncombined = classifier.retrieve_data(training_file_dict_uncombined, 1000)
+test_x_combined, test_Y_combined = classifier.retrieve_data(testing_file_dict_combined, 225) 
+test_x_uncombined, test_Y_uncombined = classifier.retrieve_data(testing_file_dict_uncombined, 225)
 
-def flatten_data(train_X, train_Y):
+def flatten_data(train_x, train_Y):
     '''
     UNFINISHED, BUGGY AF.
     changes data to ensure that there is an equal amount of each category. (Should be a one time use for combining opinion and polarized news
     '''
     unique_labels = dict()
-    flattened_X = []
+    flattened_x = []
     flattened_Y = []
     for label in train_Y:
         unique_labels[label] = unique_labels.get(label, 0) + 1
@@ -42,18 +43,19 @@ def flatten_data(train_X, train_Y):
                 if current_label == train_Y[i]:
                     random_num = random.randrange(0,2)
                     if random_num == 0:
-                        flattened_X.append(train_X[i])
+                        flattened_x.append(train_x[i])
                         flattened_Y.append(train_Y[i])
                     else:
                         continue
-        flattened_X.append(train_X[i])
+        flattened_x.append(train_x[i])
         flattened_Y.append(train_Y[i])
-    return flattened_X, flattened_Y
+    return flattened_x, flattened_Y
+
 def test_flatten_data():
-    X = [[1,2,3],[1,2,3],[2,3,4],[2,3,4],[3,4,5],[3,4,5],[3,4,5],[3,4,5],[12,13,14]]
+    x = [[1,2,3],[1,2,3],[2,3,4],[2,3,4],[3,4,5],[3,4,5],[3,4,5],[3,4,5],[12,13,14]]
     Y = [1, 1, 2, 2, 3, 3, 3, 3, 4]
-    flattened_X, flattened_Y = flatten_data(X,Y)
-    print(flattened_X, flattened_Y)
+    flattened_x, flattened_Y = flatten_data(x,Y)
+    print(flattened_x, flattened_Y)
     
 def validate(model, X, Y):
     '''
@@ -69,12 +71,12 @@ def validate(model, X, Y):
     total = len(Y)
     #print(predictions)
     correct = 0
-    for i in range(len(predictions)):
+    for i, j in enumerate(predictions):
         #print(Y[i] == predictions[i])
         #print(float(predictions[i]))
         #print(Y[i])
 
-        if float(predictions[i]) == float(Y[i]):
+        if float(j) == float(Y[i]):
             correct += 1
         else:
             statistics_dict[Y[i]] = statistics_dict.get(Y[i], 0) + 1
@@ -85,10 +87,13 @@ def validate(model, X, Y):
     return percent_correct
 
 def get_statistics(true_Y, predictions):
-    results_dict = {}
+    """
+    Method docstring placeholder
+    """
+    #results_dict = {}
     recall = recall_score(true_Y, predictions, average = None)
     precision = precision_score(true_Y, predictions, average = None)
-    f1 = f1_score(true_Y, predictions, average = None)
+    f1 = f1_score(true_Y, predictions, average = None) # pylint:disable=C0103
     #auc = roc_auc_score(true_Y, predictions, average = 'micro')
     print('recall:', str(recall))
     print('precision', str(precision))
@@ -99,54 +104,61 @@ def get_statistics(true_Y, predictions):
 ###############################
 ####Support Vector Machine#####
 ###############################
-random_state = 4261998
-support_vector_machine = classifier.svm_classifier(train_X_uncombined, train_Y_uncombined, kernel='linear', gamma='scale', random_state=random_state)
-svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined)
-#svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined, test_Y_uncombined)
-stats = get_statistics(test_Y_uncombined, svm_predictions)
-(recall, precision, f1) = *stats,
-validate(support_vector_machine, test_X_uncombined, test_Y_uncombined)
+SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(train_x_uncombined, train_Y_uncombined, kernel='linear', gamma='scale', random_state=RANDOM_STATE)
+SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, test_x_uncombined)
+#SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, test_x_uncombined, test_Y_uncombined)
+STATS = get_statistics(test_Y_uncombined, SVM_PREDICTIONS)
+(RECALL, PRECISION, F1) = *STATS,
+validate(SUPPORT_VECTOR_MACHINE, test_x_uncombined, test_Y_uncombined)
 
-# support_vector_machine_uncombined = classifier.svm_classifier(train_X_uncombined, train_Y_uncombined)
-# svm_predictions_uncombined = classifier.run_predictions(support_vector_machine, test_X_uncombined, test_Y_uncombined)
-# get_statistics(test_Y_uncombined, svm_predictions)
-# validate(support_vector_machine, test_X_uncombined, test_Y_uncombined)
+# SUPPORT_VECTOR_MACHINE_uncombined = classifier.svm_classifier(train_x_uncombined, train_Y_uncombined)
+# SVM_PREDICTIONS_uncombined = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, test_x_uncombined, test_Y_uncombined)
+# get_statistics(test_Y_uncombined, SVM_PREDICTIONS)
+# validate(SUPPORT_VECTOR_MACHINE, test_x_uncombined, test_Y_uncombined)
 
 def find_errors(model, vector_data_file, label):
     '''
     returns a dictionary that tells you how many of each category the model incorrectly predicted. 
     IT TELLS NUMBER OF INCORRECT, NOT CORRECT
     '''
-    data, labels = classifier.load_data({vector_data_file : label}, cap = 225)
+    data = classifier.load_data({vector_data_file : label}, cap = 225)[0]
+    
     incorrect_predictions = {}
     model_predictions = []
+    
     for vector in data:
         model_predictions.extend(model.predict(np.array(vector).reshape(1, -1)))
     #print(model_predictions[0])
     #print(model_predictions)
-    for i in range(len(model_predictions)):
-        if float(model_predictions[i]) != float(label):
-            #print(str(model_predictions[i]), str(label))
-            incorrect_predictions[model_predictions[i]] = incorrect_predictions.get(model_predictions[i], 0) + 1
+    
+    ### the following is a rewrite of what is commented out directly below it
+    incorrect_predictions = {label:incorrect_predictions.get(j, 0) + 1 for _, j in enumerate(model_predictions) if float(j) != float(label)}
+    #for i in range(len(model_predictions)):
+    #    if float(model_predictions[i]) != float(label):
+    #        print(str(model_predictions[i]), str(label))
+    #        incorrect_predictions[model_predictions[i]] = incorrect_predictions.get(model_predictions[i], 0) + 1 # what does this line do
     
     print(incorrect_predictions)
     return incorrect_predictions
-def vector_diagnostics(vector_data_file, label):
-    data, labels = svm_classifier.load_data({vector_data_file : label})
+
+#def vector_diagnostics(vector_data_file, label):
+#    data, labels = svm_classifier.load_data({vector_data_file : label})
+
 # print('False negatives for Opinion data:')
-# find_errors(support_vector_machine, 'opinion_vectors-testing.txt', 3)
+# find_errors(SUPPORT_VECTOR_MACHINE, 'opinion_vectors-testing.txt', 3)
 # print('False negatives for Polarized News data:')
-# find_errors(support_vector_machine, 'polarized_news_vectors-testing.txt', 5)
+# find_errors(SUPPORT_VECTOR_MACHINE, 'polarized_news_vectors-testing.txt', 5)
+
 for file in testing_file_dict_uncombined:
     title = file[:file.index('_')]
     print('False negatives for', title, 'data (' + str(testing_file_dict_uncombined[file]) + ')')
-    find_errors(support_vector_machine, file, testing_file_dict_uncombined[file])
+    find_errors(SUPPORT_VECTOR_MACHINE, file, testing_file_dict_uncombined[file])
 # for file in testing_file_dict_uncombined:
 #     title = file[:file.index('_')]
 #     print('False negatives for', title, 'data (' + str(testing_file_dict_uncombined[file]) + ')')
-#     find_errors(support_vector_machine, file, testing_file_dict_uncombined[file])
+#     find_errors(SUPPORT_VECTOR_MACHINE, file, testing_file_dict_uncombined[file])
 
 os.chdir("models")
 
-with open(f"model_kernel[{support_vector_machine.kernel}]gamma[{support_vector_machine.gamma}]rec[{np.mean(recall):{3}.{2}}]pre[{np.mean(precision):{3}.{2}}]f1[{np.mean(f1):{3}.{2}}].pickle", mode="wb") as fileout:
-    pickle.dump(support_vector_machine, fileout)
+with open(f"model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.mean(RECALL):{3}.{2}}]pre[{np.mean(PRECISION):{3}.{2}}]f1[{np.mean(F1):{3}.{2}}].pickle", mode="wb") as fileout:
+    pickle.dump(SUPPORT_VECTOR_MACHINE, fileout)
