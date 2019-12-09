@@ -61,6 +61,7 @@ def write_feature_matrix_to_file(matrix, labels, write_file):
     write_file - string
     '''
     file = open(write_file, 'a')
+    #TODO: raise exceptions instead of asserting
     assert len(matrix) == len(labels), 'len of list of feature matrices != len of list of labels'
 
     for i, _ in enumerate(matrix):
@@ -99,7 +100,6 @@ def prepare_data(file_dict):
 
     return feature_matrices, feature_labels
 
-
 #training_data = prepare_data(TRAINING_FILE_DICT)
 #testing_data = prepare_data(TESTING_FILE_DICT)
 #training_data_x = training_data[0]
@@ -107,13 +107,6 @@ def prepare_data(file_dict):
 #testing_data_x = testing_data[0]
 #testing_data_y = testing_data[1]
 #write_feature_matrix_to_file(training_data_x, training_data_y, 'satire_vectors-testing.txt')
-
-#count_lines('satire_vectors-testing.txt')
-
-#support_vector_machine = sklearn.svm.SVC(gamma = 'scale')
-#support_vector_machine.fit(complete_X, complete_Y)
-
-
 
 def load_data(training_dict, cap=0):
     '''
@@ -125,35 +118,31 @@ def load_data(training_dict, cap=0):
     labels = []
     for file in training_dict:
         #print(os.getcwd())
-        current = open(file, 'r')
-        data = current.readlines()
-        limit = 0
-        if cap == 0:
-            if 'opinion' in file or 'polarized' in file:
-                limit = len(data) / 2
+        with open(file, mode='r') as current:
+            data = current.readlines()
+            limit = 0
+            if cap == 0:
+                if 'opinion' in file or 'polarized' in file:
+                    limit = len(data) / 2
+                else:
+                    limit = len(data)
             else:
-                limit = len(data)
-        else:
-            if 'opinion' in file or 'polarized' in file:
-                limit = cap / 2
-            limit = cap
-        #print(limit)
+                if 'opinion' in file or 'polarized' in file:
+                    limit = cap / 2
+                limit = cap
+            #print(limit)
 
-        for i in range(int(limit)):
-            if len(data[i]) < 2:
-                continue
-            data[i] = data[i].strip().split(' ')
-            assert isinstance(data[i], list), 'not a list bruh'
-            data[i].pop(-1) # remove label in the text file
-            labels.append(training_dict[file])
-            training_data.append(data[i])
-        current.close()
+            for i in range(int(limit)):
+                if len(data[i]) < 2:
+                    continue
+                data[i] = data[i].strip().split(' ')
+                #TODO: raise exceptions instead of asserting
+                assert isinstance(data[i], list), 'not a list bruh'
+                data[i].pop(-1) # remove label in the text file
+                labels.append(training_dict[file])
+                training_data.append(data[i])
 
     training_data = [[float(i) for i in j] for _, j in enumerate(training_data)]
-    #convert to int
-    #for i in range(len(training_data)):
-    #    for j in range(len(training_data[i])):
-    #        training_data[i][j] = float(training_data[i][j])
     return training_data, labels
 
 TRAINING_FILE_DICT = {'real_news_vectors-training.txt' : 1,
