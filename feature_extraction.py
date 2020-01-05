@@ -92,7 +92,9 @@ class ArticleVector:
     ##### INSTANCE ATTRIBUTES #####
 
     def __init__(self, url = "", text = ""):
-        self.vector = [0] * ArticleVector.NUM_DIMENSIONS 
+        # vector of length num_features
+        # vectorized article
+        self.vector = [0] * ArticleVector.NUM_DIMENSIONS
         self.url = url
         self.num_periods = ArticleVector.num_periods_in_url(self.url)
         self.cleaned_url = self.clean_url()

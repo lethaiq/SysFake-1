@@ -13,6 +13,7 @@ np.set_printoptions(precision=2)
 RANDOM_STATE = 4261998
 NUM_TRIALS = 30
 
+# combined -> opinion + polarized are same label
 TRAINING_FILE_DICT_UNCOMBINED = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
                     'polarized_news_vectors-training.txt' : 5,'satire_vectors-training.txt' : 7}
 TRAINING_FILE_DICT_COMBINED = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
@@ -30,7 +31,7 @@ TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED = classifier.retrieve_data(TESTING_FILE_DIC
 def flatten_data(train_x, train_y):
     '''
     UNFINISHED, BUGGY AF.
-    changes data to ensure that there is an equal amount of each category. (Should be a one time use for combining opinion and polarized news
+    changes data to ensure that there is an equal amount of each category.(Should be a one time use for combining opinion and polarized news
     '''
     unique_labels = dict()
     flattened_x = []
@@ -153,7 +154,6 @@ def find_errors(model, vector_data_file, label):
             #print(str(model_predictions[i]), str(label))
             incorrect_predictions[model_predictions[i]] = incorrect_predictions.get(model_predictions[i], 0) + 1
 
-    incorrect_predictions = Counter()
     print(incorrect_predictions)
     return incorrect_predictions
 
@@ -168,12 +168,7 @@ def find_errors(model, vector_data_file, label):
 for file in TESTING_FILE_DICT_UNCOMBINED:
     title = file[:file.index('_')]
     print(f"False negatives for {title} data ({TESTING_FILE_DICT_UNCOMBINED[file]!s})")
-    #print('False negatives for', title, 'data (' + str(TESTING_FILE_DICT_UNCOMBINED[file]) + ')')
     find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
-# for file in TESTING_FILE_DICT_UNCOMBINED:
-#     title = file[:file.index('_')]
-#     print('False negatives for', title, 'data (' + str(TESTING_FILE_DICT_UNCOMBINED[file]) + ')')
-#     find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
 
 # serialize and save current model
 os.chdir("models")
