@@ -30,7 +30,6 @@ TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED = classifier.retrieve_data(TESTING_FILE_DIC
 
 def flatten_data(train_x, train_y):
     '''
-    UNFINISHED, BUGGY AF.
     changes data to ensure that there is an equal amount of each category.(Should be a one time use for combining opinion and polarized news
     '''
     unique_labels = dict()
@@ -114,9 +113,10 @@ def get_statistics(true_y, predictions):
 ###############################
 SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
                                                    TRAIN_Y_UNCOMBINED,
-                                                   kernel='linear',
-                                                   gamma='scale',
-                                                   random_state=RANDOM_STATE)
+                                                   kernel='rbf',
+                                                   gamma='auto',
+                                                   random_state=RANDOM_STATE,
+                                                   verbose=True)
 SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED)
 #SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
 STATS = get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS)
