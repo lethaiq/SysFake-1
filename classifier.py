@@ -170,11 +170,12 @@ def retrieve_data(file_dict, cap):
     data_y = training_data[1]
     return data_x, data_y
 
-def svm_classifier(x_feature_matrix, y_labels, kernel='rbf', gamma="scale", random_state=0, verbose=False):
+def svm_classifier(x_feature_matrix, y_labels, kernel='rbf', gamma="scale", random_state=0, verbose=False, C=1.0):
     """
     Method Docstring Placeholder
     """
-    support_vector_machine = sklearn.svm.SVC(kernel=kernel, gamma=gamma,
+    support_vector_machine = sklearn.svm.SVC(C=C,
+                                             kernel=kernel, gamma=gamma,
                                              random_state=random_state,
                                              verbose=verbose)
     support_vector_machine.fit(x_feature_matrix, y_labels)

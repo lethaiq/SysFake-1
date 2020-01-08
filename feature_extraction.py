@@ -347,22 +347,41 @@ class ArticleVector:
         '''
         calls all the methods created to fill in self.vector
         '''
-        self.vector[0] = self.url_ending_index() # reputable url ending feature 
-        self.vector[1] = self.from_reputable_source_index() # reputable news source feature 
-        self.vector[2] = self.today_index() #contains 'today' feature
-        self.vector[3] = self.grammar_index() #number of grammar mistakes feature
-        self.vector[4] = self.quotation_index() #number of times a "" shows up.
-        self.vector[5] = self.past_tense_index() #number of times a past tense verb shows up
-        self.vector[6] = self.present_tense_index() # number of times a present tense verb shows up / number of total words
-        self.vector[7] = self.should_index() # number of times "should" shows up / number of total words
-        self.vector[8] = self.opinion_index() # whether or not opinion shows up in url
-        self.vector[9] = self.all_caps_index() # number of all caps words / number of total words
-        self.vector[10] = self.from_satire_source_index() # whether article is from satire news outlet.
-        self.vector[11] = self.exclamation_index() # number of exclamation points / number of total words
-        self.vector[12] = self.apa_index() # number of apa errors in an article
-        self.vector[13] = self.name_source_index() # number of proper nouns in article / number of total words
-        self.vector[14] = self.interjection_index() # number of interjections in article / number of total words
-        self.vector[15] = self.you_index() # number of times you shows up in article / number of total words
-        self.vector[16] = self.dot_gov_ending_index() # 1 if url ending is .gov, for persuasive information
-        self.vector[17] = self.from_unreputable_source_index() # 1 if article is from unreputable source
-        #self.vector[18] = self.ap_style_index() # number of ap style violations
+        # reputable url ending feature 
+        self.vector[0] = self.url_ending_index()
+        # reputable news source feature 
+        self.vector[1] = self.from_reputable_source_index()
+        # contains 'today' feature
+        self.vector[2] = self.today_index()
+        # number of grammar mistakes feature
+        self.vector[3] = self.grammar_index()
+        # number of times a "" shows up.
+        self.vector[4] = self.quotation_index()
+        # number of times a past tense verb shows up
+        self.vector[5] = self.past_tense_index()
+        # number of times a present tense verb shows up / number of total words
+        self.vector[6] = self.present_tense_index()
+        # number of times "should" shows up / number of total words
+        self.vector[7] = self.should_index()
+        # whether or not opinion shows up in url
+        self.vector[8] = self.opinion_index()
+        # number of all caps words / number of total words
+        self.vector[9] = self.all_caps_index()
+        # whether article is from satire news outlet.
+        self.vector[10] = self.from_satire_source_index()
+        # number of exclamation points / number of total words
+        self.vector[11] = self.exclamation_index()
+        # number of apa errors in an article
+        self.vector[12] = self.apa_index()
+        # number of proper nouns in article / number of total words
+        self.vector[13] = self.name_source_index()
+        # number of interjections in article / number of total words
+        self.vector[14] = self.interjection_index()
+        # number of times you shows up in article / number of total words
+        self.vector[15] = self.you_index()
+        # 1 if url ending is .gov, for persuasive information
+        self.vector[16] = self.dot_gov_ending_index()
+        # 1 if article is from unreputable source
+        self.vector[17] = self.from_unreputable_source_index()
+        # number of ap style violations
+        #self.vector[18] = self.ap_style_index()

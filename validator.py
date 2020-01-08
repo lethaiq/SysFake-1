@@ -113,6 +113,7 @@ def get_statistics(true_y, predictions):
 ###############################
 SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
                                                    TRAIN_Y_UNCOMBINED,
+                                                   C=3.0,
                                                    kernel='rbf',
                                                    gamma='auto',
                                                    random_state=RANDOM_STATE,
