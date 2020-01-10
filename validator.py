@@ -8,6 +8,7 @@ from sklearn.metrics import recall_score, precision_score, f1_score #roc_auc_sco
 import numpy as np
 import classifier
 
+os.chdir("data")
 np.set_printoptions(precision=2)
 
 RANDOM_STATE = 4261998
@@ -172,6 +173,6 @@ for file in TESTING_FILE_DICT_UNCOMBINED:
     find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
 
 # serialize and save current model
-os.chdir("models")
+os.chdir("../models")
 with open(f"model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.mean(RECALL):{3}.{2}}]pre[{np.mean(PRECISION):{3}.{2}}]f1[{np.mean(F1):{3}.{2}}].pickle", mode="wb") as fileout: #pylint:disable=C0301
     pickle.dump(SUPPORT_VECTOR_MACHINE, fileout)
