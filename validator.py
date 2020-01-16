@@ -1,5 +1,6 @@
 import random
 import pickle
+import glob
 import os
 
 from collections import Counter
@@ -112,6 +113,7 @@ def get_statistics(true_y, predictions):
 ###############################
 ####Support Vector Machine#####
 ###############################
+#os.chdir("../models")
 SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
                                                    TRAIN_Y_UNCOMBINED,
                                                    C=3.0,
@@ -119,6 +121,10 @@ SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
                                                    gamma='auto',
                                                    random_state=RANDOM_STATE,
                                                    verbose=True)
+#SUBSET_MODELS = glob.glob("./*subset*.pickle")
+
+#with open(max(SUBSET_MODELS, key=os.path.getctime), mode='rb') as filein:
+#    SUPPORT_VECTOR_MACHINE = pickle.load(filein)
 SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED)
 #SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
 STATS = get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS)
@@ -176,3 +182,5 @@ for file in TESTING_FILE_DICT_UNCOMBINED:
 os.chdir("../models")
 with open(f"model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.mean(RECALL):{3}.{2}}]pre[{np.mean(PRECISION):{3}.{2}}]f1[{np.mean(F1):{3}.{2}}].pickle", mode="wb") as fileout: #pylint:disable=C0301
     pickle.dump(SUPPORT_VECTOR_MACHINE, fileout)
+
+os.chdir("../")
