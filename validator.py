@@ -95,7 +95,7 @@ def validate(model, X, Y):
     print(f"This model got {percent_correct!s:{5}.{5}}% correct || {correct!s} out of {total!s}")
     return percent_correct
 
-def get_statistics(true_y, predictions):
+def get_statistics(true_y, predictions, verbose=0):
     """
     Method docstring placeholder
     """
@@ -104,9 +104,9 @@ def get_statistics(true_y, predictions):
     precision = precision_score(true_y, predictions, average = None)
     f1 = f1_score(true_y, predictions, average = None) #pylint:disable=C0103
     #auc = roc_auc_score(true_y, predictions, average = 'micro')
-    print('recall:', str(recall))
-    print('precision', str(precision))
-    print('f1:', str(f1))
+    nl = '\n'
+    if verbose > 0:
+        print(f"{'-'*12}{nl}recall:{recall!s}{nl}precision:{precision!s}{nl}f1:{f1!s}{nl}{'-'*12}{nl}")
     #print('auc:', str(auc)) a
     return [recall, precision, f1]
 
