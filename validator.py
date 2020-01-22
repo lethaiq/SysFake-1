@@ -92,7 +92,7 @@ def validate(model, X, Y):
     percent_correct = (correct / total) * 100
 
     print(statistics_dict)
-    print(f"This model got {percent_correct!s:{5}.{5}}% correct || {correct!s} out of {total!s}")
+    print(f"This model got {np.round(np.mean(percent_correct), 2)!s}% correct || {correct!s} out of {total!s}")
     return percent_correct
 
 def get_statistics(true_y, predictions, verbose=0):
@@ -180,7 +180,7 @@ for file in TESTING_FILE_DICT_UNCOMBINED:
 
 # serialize and save current model
 os.chdir("../models")
-with open(f"model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.mean(RECALL):{3}.{2}}]pre[{np.mean(PRECISION):{3}.{2}}]f1[{np.mean(F1):{3}.{2}}].pickle", mode="wb") as fileout: #pylint:disable=C0301
+with open(f"model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.round(np.mean(RECALL), 2)}]pre[{np.round(np.mean(PRECISION), 2)}]f1[{np.round(np.mean(F1), 2)}].pickle", mode="wb") as fileout: #pylint:disable=C0301
     pickle.dump(SUPPORT_VECTOR_MACHINE, fileout)
 
 os.chdir("../")
