@@ -164,7 +164,7 @@ def retrieve_data(file_dict, cap):
     X: feature matrix from file dict
     '''
 
-    print('Retreiving data...')
+    print('Retrieving data...')
     training_data = load_data(file_dict, cap)
     data_x = training_data[0]
     data_y = training_data[1]

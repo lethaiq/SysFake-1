@@ -120,14 +120,14 @@ SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
                                                    kernel='rbf',
                                                    gamma='auto',
                                                    random_state=RANDOM_STATE,
-                                                   verbose=True)
+                                                   verbose=False)
 #SUBSET_MODELS = glob.glob("./*subset*.pickle")
 
 #with open(max(SUBSET_MODELS, key=os.path.getctime), mode='rb') as filein:
 #    SUPPORT_VECTOR_MACHINE = pickle.load(filein)
 SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED)
 #SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
-STATS = get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS)
+STATS = get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS, verbose=1)
 (RECALL, PRECISION, F1) = *STATS,
 validate(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
 
