@@ -1,17 +1,30 @@
 # Summer-REU-Research
-To the next PSU student who inherits this code:
+<sup>Terrence Langer (Langer81) and Hunter S. DiCicco (dicicch)</sup>
 
-The goal of this project is to create a multi-nomial classifier which takes an article url and labels it as either fake, real, satirical, polarized, opinion, misreporting, or persuasive information. (Each type is explained in the explication paper).
+## Overview
 
-Important files:
+### Problem Statement
+In an online news media environment ever-saturated with conflicts of interest and deceptive content and governed by readers' scarce attention, it is becoming increasingly difficult for the average consumer to tell genuine news apart. One can imagine a capability (say, a browser extension) that leverages statistical learning based on linguistic and metadata features of a news article in question to provide users with an estimate of whether an article is genuine or not.
 
-feature_extraction.py - ArticleVector() will be your best friend this summer. ArticleVector will be how you vectorize an article into its respective features. You can find the features in the fill_vector() class:
+### Goal
+The goal of this project is to train and validate a multinomial C-Support Vector Machine for the purpose of classifying vectorized news articles under the following categories:
+* **1:** Real
+* **2:** Fake
+* **3:** Opinion
+* **5:** Polarized
+* **7:** Satire
 
-classifier.py - This the initialization of the support vector machine. Basically the logistics of data preparation.
+## Repository Content
 
-validator.py - this will help you validate the accuracy of your model. 
+### Important files:
 
-the .txt files are basically all for data collection. Their names should explain their respective uses. 
+`feature_extraction.py` - `ArticleVector()` will be your best friend this summer. `ArticleVector` will be how you vectorize an article into its respective features. You can find the features in the `fill_vector()` method.
+
+`classifier.py` - This the initialization of the support vector machine. Basically the logistics of data preparation.
+
+`validator.py` - this will help you validate the accuracy of your model. 
+
+the `.txt` files under the `data` directory are related to data collection. Their names should explain their respective uses. 
 
 
 Features from the Explication paper that have been implemented:
