@@ -8,11 +8,14 @@ In an online news media environment ever-saturated with conflicts of interest an
 
 ### Goal
 The goal of this project is to train and validate a multinomial C-Support Vector Machine for the purpose of classifying vectorized news articles under the following categories:
+
 * **1:** Real
 * **2:** Fake
 * **3:** Opinion
 * **5:** Polarized
 * **7:** Satire
+
+In doing so we hope to create a characteristic model consisting of only significant contributions from the most representative features.
 
 ## Repository Content
 
