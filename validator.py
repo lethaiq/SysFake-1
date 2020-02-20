@@ -92,7 +92,7 @@ def validate(model, X, Y):
     percent_correct = (correct / total) * 100
 
     print(statistics_dict)
-    print(f"This model got {np.round(np.mean(percent_correct), 2)!s}% correct || {correct!s} out of {total!s}")
+    print(f"This model got {np.round(np.mean(percent_correct), 2)!s}% correct || {correct!s} out of {total!s}.")
     return percent_correct
 
 def get_statistics(true_y, predictions, verbose=0):
@@ -117,7 +117,7 @@ def get_statistics(true_y, predictions, verbose=0):
 SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
                                                    TRAIN_Y_UNCOMBINED,
                                                    C=3.0,
-                                                   kernel='rbf',
+                                                   kernel='linear',
                                                    gamma='auto',
                                                    random_state=RANDOM_STATE,
                                                    verbose=False)
