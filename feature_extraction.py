@@ -8,6 +8,24 @@ from newspaper import Article
 from goose3 import Goose
 from pyapa import pyapa
 
+def process_source_list(filename="", delimiter='\n'):
+    """
+    ===
+    Utility function to preprocess and read in items from a text file to a list.
+    This function is not performed in-place.
+    ===
+    Parameters
+    ===
+        source: str
+            File name of text to be processed and read. Defaults to an empty string.
+        delimiter: str
+            Character which separates discrete items in the text file.
+    """
+    with open(filename, 'r') as filein:
+        list_before_processing = filein.readlines()
+        return [j.replace(" ", "").lower().strip() for i, j in enumerate(list_before_processing)]
+
+
 class ArticleVector:
     """
     Purpose: Extract a vector of articles/urls to be stored in feature matrix
@@ -15,35 +33,14 @@ class ArticleVector:
 
     ##### CLASS ATTRIBUTES #####
 
-    def __init__(self):
-        #print(os.getcwd())
-        ##todo: assign this based on length of features in a global config
-        NUM_DIMENSIONS = 18 # changes as unique features are added
-        
-        reputable_news_sources = process_source_list("reputable_news_sources.txt")
-        
-        satire_news_sources = process_source_list("satire_news_sources.txt")
-
-        unreputable_news_sources = process_source_list("unreputable_news_sources.txt")
-        
-    @staticmethod
-    def process_source_list(filename="", delimiter='\n'):
-        """
-        ===
-        Utility function to preprocess and read in items from a text file to a list.
-        This function is not performed in-place.
-        ===
-        Parameters
-        ===
-            source: str
-                File name of text to be processed and read. Defaults to an empty string.
-            delimiter: str
-                Character which separates discrete items in the text file.
-        """
-
-        with open(source, 'r') as filein:
-            list_before_processing = filein.readlines()
-            return [j.replace(" ", "").lower().strip() for i, j in enumerate(list_before_processing)]
+    #print(os.getcwd())
+    ##todo: assign this based on length of features in a global config
+    NUM_DIMENSIONS = 18 # changes as unique features are added
+    
+    reputable_news_sources = process_source_list("reputable_news_sources.txt")
+    
+    satire_news_sources = process_source_list("satire_news_sources.txt")
+    unreputable_news_sources = process_source_list("unreputable_news_sources.txt")
 
     def word_contains(string1, string2):
         '''
@@ -218,15 +215,15 @@ class ArticleVector:
             return 1
         else:
             return 0
-    '''
+
     def apa_index(self):
-        
+        '''
         returns number of apa errors
-        
+        '''
         checker = pyapa.ApaCheck()
         matches = checker.match(self.text)
         return len(matches)
-    '''
+
     def today_index(self):
         '''
         returns the number of times "today" appears in the article text
