@@ -74,7 +74,7 @@ class ArticleVector:
         if n == 0:
             return index - 1
         elif string == "":
-            raise Exception('Substring not foundbro')
+            raise Exception('Substring not found')
         elif string[0] == char:
             return ArticleVector.nth_index(string[1:], char, n - 1, index + 1)
         elif string[0] != char:
@@ -100,6 +100,7 @@ class ArticleVector:
             self.title = article.title
             self.text = article.cleaned_text
         elif text != "" and url == "": # user enters article text
+            self.title = ''
             self.text = text
         self.num_words = len(self.text.split(' '))
         self.paired_tokens = self.tokenize() #list of tuples ex. [('helped', 'VBD')]
@@ -270,9 +271,10 @@ class ArticleVector:
         return the number of words in all caps in the title and body divided by the total number of words
         '''
         caps_index = 0
-        for word in self.title.split(' '):
-            if word.isupper():
-                caps_index += 1
+        if self.title:
+            for word in self.title.split(' '):
+                if word.isupper():
+                    caps_index += 1
         for word in self.text.split(' '):
             if word.isupper():
                 caps_index += 1
