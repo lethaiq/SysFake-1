@@ -1,4 +1,4 @@
-![SysFake Logo](figures/sysfake.png)
+![](figures/sysfake.png)
 
 # [SysFake](https://sites.google.com/site/pikesysfake/home)
 <sup>Terrence Langer (Langer81) and Hunter S. DiCicco (dicicch)</sup>
