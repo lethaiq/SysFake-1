@@ -1,6 +1,8 @@
 import os
 
+import goose3 as goose
 import language_check
+import requests
 import nltk
 
 from ap_style_checker import StyleChecker
@@ -84,23 +86,23 @@ class ArticleVector:
         return period_count
     ##### INSTANCE ATTRIBUTES #####
 
-    def __init__(self, url="", text=""):
+    def __init__(self, url="", text="", title=""):
         self.vector = [0] * ArticleVector.NUM_DIMENSIONS
         self.url = url
         self.num_periods = ArticleVector.num_periods_in_url(self.url)
         self.cleaned_url = self.clean_url()
         self.text = text
         if text and url: # usr enters both
-            print('test')
-            article = self.extract_article()
-            self.title = article.title
+            #print('test')
+            #article = self.extract_article()
+            self.title = title
             self.text = text
         elif not text and url: # user enters url
             article = self.extract_article()
             self.title = article.title
             self.text = article.cleaned_text
         elif text and not url: # user enters article text
-            self.title = ''
+            self.title = title
             self.text = text
         self.num_words = len(self.text.split(' '))
         self.paired_tokens = self.tokenize() #list of tuples ex. [('helped', 'VBD')]
@@ -124,6 +126,7 @@ class ArticleVector:
             second_period = ArticleVector.nth_index(self.url, '.', 2)
             return self.url[first_period + 1 : second_period]
         return ''
+
     def grammar_index(self):
         '''
         returns the number of grammar mistakes of the article divided by the length of the article
@@ -138,9 +141,14 @@ class ArticleVector:
         '''
         returns a goose article object
         '''
-
-        gooser = Goose()
-        article = gooser.extract(url=self.url)
+        gooser = Goose({'browser_user_agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+                       'strict': False,
+                       'enable_image_fetching':False})
+        try:
+            article = gooser.extract(url=self.url)
+        except requests.exceptions.ReadTimeout:
+            print('Timeout occurred...')
+            article = goose.Article()
         return article
 
     def quotation_index(self):
