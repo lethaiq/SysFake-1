@@ -1,4 +1,4 @@
-![](http://pike.psu.edu/images/sysfake.png)
+![](http://pike.psu.edu/images/sysfake.png?width=600)
 
 # [SysFake](https://sites.google.com/site/pikesysfake/home)
 <sup>Terrence Langer (Langer81) and Hunter S. DiCicco (dicicch)</sup>
