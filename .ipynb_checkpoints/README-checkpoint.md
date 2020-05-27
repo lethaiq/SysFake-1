@@ -18,8 +18,12 @@ The goal of this project is to train and validate a multinomial C-Support Vector
 * **3:** Opinion
 * **5:** Polarized
 * **7:** Satire
+* **9:** Promotional Content
+* **11:** Corrections
 
 In doing so we hope to create a characteristic model consisting of only significant contributions from the most representative features.
+
+For more details on how these labels are defined, see the project's companion paper *[“Fake News” is not simply False Information: A Concept Explication and Taxonomy of Online Content](http://pike.psu.edu/publications/abs19.pdf)*
 
 The resulting model will then be tested against humans in an experiment in which both parties will be asked to classify the same set of new articles.
 
