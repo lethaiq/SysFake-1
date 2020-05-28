@@ -5,6 +5,8 @@
 
 <sup>Under the direction of Dr. Dongwon Lee, Ph.D., Dr. S. Shyam Sundar, Ph.D. and the SysFake team under Penn State's department of Journalism</sup>
 
+<sup>For information about how this research is supported, please visit the homepage linked above.</sup>
+
 ## Overview
 
 ### Problem Statement
@@ -87,10 +89,12 @@ First trial performance on full dataset:
 
 Current performance:
 
-|                      |  real |  fake | opinion | polarized |  satire |
-|----------------------|-------|-------|---------|-----------|---------|
-| mean 20-fold recall  | 0.945 | 0.958 |  0.999  |   0.999   |  0.999  |
-| mean # misclassified |   0   |   11  |    0    |     0     |    2    |
+|                      |  real  |  fake  |  opinion  | polarized |  satire  |  promotional  |  correction  |
+|----------------------|--------|--------|---------|-----------|----------|---------------|--------------|
+| mean 20-fold recall  | 0.9989 |  1.00  |  0.998  |  0.9996   |  0.9986  |     0.9783    |    0.9998    |
+| 20-fold # misclass   | 2      |  0     |  3      |  1        |  2       |     3         |    1         |
+| full set recall      | 1.00   |  1.00  |  1.00   |  1.00     |  1.00    |     0.99      |    1.00      |
+| full set # misclass  | 0      |  0     |  2      |  0        |  1       |     1         |    0         |
 
 ## Usage guide:
 
