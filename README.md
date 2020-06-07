@@ -76,7 +76,7 @@ Important features that have not been implemented:
 
 ## Current Performance:
 
-First trial performance on full dataset:
+### First trial performance on full dataset:
 
 |                 | real | fake | opinion | polarized | satire |
 |-----------------|------|------|---------|-----------|--------|
@@ -87,14 +87,19 @@ First trial performance on full dataset:
 
 57.59 percent correct overall, 645 correct out of  1120
 
-Current performance:
+### Latest performance:
+
+Recall: `tp / (tp + fn)`
+
+Precision: `tp / (tp + fp)`
 
 |                      |  real  |  fake  |  opinion  | polarized |  satire  |  promotional  |  correction  |
 |----------------------|--------|--------|---------|-----------|----------|---------------|--------------|
 | mean 20-fold recall  | 0.9989 |  1.00  |  0.998  |  0.9996   |  0.9986  |     0.9783    |    0.9998    |
-| 20-fold # misclass   | 2      |  0     |  3      |  1        |  2       |     3         |    1         |
 | full set recall      | 1.00   |  1.00  |  1.00   |  1.00     |  1.00    |     0.99      |    1.00      |
-| full set # misclass  | 0      |  0     |  2      |  0        |  1       |     1         |    0         |
+| mean 20-fold precision    | 0.9984 |  1.00  |  0.9966 |  0.9994   |  0.9982  |     0.98      |    0.9995    |
+| 20-fold # misclass   | 2      |  0     |  3      |  1        |  2       |     3         |    1         |
+| full set # misclass  | 2      |  0     |  5      |  1        |  2       |     1         |    2         |
 
 ## Usage guide:
 
