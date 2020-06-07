@@ -142,4 +142,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Explication Paper and More References
+*.pdf
+
 # End of https://www.toptal.com/developers/gitignore/api/jupyternotebook,jupyternotebooks,python
