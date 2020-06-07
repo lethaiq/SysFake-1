@@ -1,7 +1,7 @@
 ![](http://pike.psu.edu/images/sysfake.png?width=600)
 
 # [SysFake](https://sites.google.com/site/pikesysfake/home)
-<sup>Terrence Langer (Langer81) and Hunter S. DiCicco (dicicch)</sup>
+<sup>Terrence Li (Langer81) and Hunter S. DiCicco (dicicch)</sup>
 
 <sup>Under the direction of Dr. Dongwon Lee, Ph.D., Dr. S. Shyam Sundar, Ph.D. and the SysFake team under Penn State's department of Journalism</sup>
 
@@ -125,5 +125,5 @@ data is separated out into urls, vectors, and then split into training and testi
 
 |        name       |     cell     |          email         |
 |-------------------|--------------|------------------------|
-| Terence G. Langer | 814-308-4495 | terrencegl10@gmail.com |
+| Terence G. Li     | 814-308-4495 | terrencegl10@gmail.com |
 | Hunter S. DiCicco | 609-815-5122 |  hsdicicco@gmail.com   |
