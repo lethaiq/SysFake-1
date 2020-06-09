@@ -1,12 +1,32 @@
 import os
 
+import goose3 as goose
 import language_check
+import requests
 import nltk
 
 from ap_style_checker import StyleChecker
 from newspaper import Article
 from goose3 import Goose
 from pyapa import pyapa
+
+def process_source_list(filename="", delimiter='\n'):
+    """
+    ===
+    Utility function to preprocess and read in items from a text file to a list.
+    This function is not performed in-place.
+    ===
+    Parameters
+    ===
+        source: str
+            File name of text to be processed and read. Defaults to an empty string.
+        delimiter: str
+            Character which separates discrete items in the text file.
+    """
+    with open(filename, 'r') as filein:
+        list_before_processing = filein.readlines()
+        return [j.replace(" ", "").lower().strip() for i, j in enumerate(list_before_processing)]
+
 
 class ArticleVector:
     """
@@ -15,37 +35,14 @@ class ArticleVector:
 
     ##### CLASS ATTRIBUTES #####
 
-    def __init__(self):
-        #print(os.getcwd())
-        ##todo: assign this based on length of features in a global config
-        NUM_DIMENSIONS = 18 # changes as unique features are added
-        
-        reputable_news_sources = process_source_list("reputable_news_sources.txt")
-        
-        satire_news_sources = process_source_list("satire_news_sources.txt")
+    ##todo: assign this based on length of features in a global config
+    NUM_DIMENSIONS = 18 # changes as unique features are added
 
-        unreputable_news_sources = process_source_list("unreputable_news_sources.txt")
-        
-    @staticmethod
-    def process_source_list(filename="", delimiter='\n'):
-        """
-        ===
-        Utility function to preprocess and read in items from a text file to a list.
-        This function is not performed in-place.
-        ===
-        Parameters
-        ===
-            source: str
-                File name of text to be processed and read. Defaults to an empty string.
-            delimiter: str
-                Character which separates discrete items in the text file.
-        """
+    reputable_news_sources = process_source_list("reputable_news_sources.txt")
+    satire_news_sources = process_source_list("satire_news_sources.txt")
+    unreputable_news_sources = process_source_list("unreputable_news_sources.txt")
 
-        with open(source, 'r') as filein:
-            list_before_processing = filein.readlines()
-            return [j.replace(" ", "").lower().strip() for i, j in enumerate(list_before_processing)]
-
-    def word_contains(string1, string2):
+    def word_contains(self, string1="", string2=""):
         '''
         return true if string1 is inside string2 as long as the order fixed.
         ex: word_contains('wsj', 'wallstreetjournal')  -> True
@@ -54,19 +51,17 @@ class ArticleVector:
         '''
         if string1 == '' and string2 != '':
             return True
-        elif string1 != '' and string2 == '':
+        if string1 != '' and string2 == '':
             return False
-        elif string1 == '' and string2 == '':
+        if string1 == '' and string2 == '':
             return True
-        else:
-            string1_first = string1[0]
-            string2_first = string2[0]
-            if string1_first == string2_first:
-                return ArticleVector.word_contains(string1[1:], string2[1:])
-            else:
-                return ArticleVector.word_contains(string1, string2[1:])
+        string1_first = string1[0]
+        string2_first = string2[0]
+        if string1_first == string2_first:
+            return ArticleVector.word_contains(string1[1:], string2[1:])
+        return ArticleVector.word_contains(string1, string2[1:])
 
-    def nth_index(string, char, n, index = 0):
+    def nth_index(self, string, char, n=0, index=0):
         '''
         return the index of the nth occurence of a character in a string
         string - string of interest
@@ -77,13 +72,13 @@ class ArticleVector:
         if n == 0:
             return index - 1
         elif string == "":
-            raise Exception('Substring not foundbro')
+            raise Exception('Substring not found')
         elif string[0] == char:
             return ArticleVector.nth_index(string[1:], char, n - 1, index + 1)
         elif string[0] != char:
             return ArticleVector.nth_index(string[1:], char, n, index + 1)
 
-    def num_periods_in_url(url):
+    def num_periods_in_url(self, url=""):
         period_count = 0
         for letter in url:
             if letter == '.':
@@ -91,22 +86,26 @@ class ArticleVector:
         return period_count
     ##### INSTANCE ATTRIBUTES #####
 
-    def __init__(self, url = "", text = ""):
-        # vector of length num_features
-        # vectorized article
+    def __init__(self, url="", text="", title=""):
         self.vector = [0] * ArticleVector.NUM_DIMENSIONS
         self.url = url
         self.num_periods = ArticleVector.num_periods_in_url(self.url)
         self.cleaned_url = self.clean_url()
-        if text == "" and url != "": # user enters url
+        self.text = text
+        if text and url: # usr enters both
+            #print('test')
+            #article = self.extract_article()
+            self.title = title
+            self.text = text
+        elif not text and url: # user enters url
             article = self.extract_article()
             self.title = article.title
             self.text = article.cleaned_text
-        elif text != "" and url == "": # user enters article text
+        elif text and not url: # user enters article text
+            self.title = title
             self.text = text
         self.num_words = len(self.text.split(' '))
         self.paired_tokens = self.tokenize() #list of tuples ex. [('helped', 'VBD')]
-        
         self.validate()
         self.fill_vector()
 
@@ -127,13 +126,14 @@ class ArticleVector:
             second_period = ArticleVector.nth_index(self.url, '.', 2)
             return self.url[first_period + 1 : second_period]
         return ''
+
     def grammar_index(self):
         '''
         returns the number of grammar mistakes of the article divided by the length of the article
         '''
 
         checker = language_check.LanguageTool('en-US')
-        matches = checker.check(self.text) # of typos. 
+        matches = checker.check(self.text) # of typos.
         return len(matches) / self.num_words
         #return 0
 
@@ -141,9 +141,14 @@ class ArticleVector:
         '''
         returns a goose article object
         '''
-
-        gooser = Goose()
-        article = gooser.extract(url = self.url)
+        gooser = Goose({'browser_user_agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
+                       'strict': False,
+                       'enable_image_fetching':False})
+        try:
+            article = gooser.extract(url=self.url)
+        except requests.exceptions.ReadTimeout:
+            print('Timeout occurred...')
+            article = goose.Article()
         return article
 
     def quotation_index(self):
@@ -173,15 +178,13 @@ class ArticleVector:
 
     def present_tense_index(self):
         '''
-        returns the number of present tense verbs in the text over the 
+        returns the number of present tense verbs in the text over the
         '''
         present_index = 0
         for pair in self.paired_tokens:
             if pair[1] == 'VBP' or pair[1] == 'VBZ' or pair[1] == 'VBG': # alter later if bad
                 present_index += 1
         return present_index / self.num_words
-
-    
 
     def url_ending_index(self):
         '''
@@ -218,15 +221,15 @@ class ArticleVector:
             return 1
         else:
             return 0
-    '''
+
     def apa_index(self):
-        
+        '''
         returns number of apa errors
-        
+        '''
         checker = pyapa.ApaCheck()
         matches = checker.match(self.text)
         return len(matches)
-    '''
+
     def today_index(self):
         '''
         returns the number of times "today" appears in the article text
@@ -273,9 +276,10 @@ class ArticleVector:
         return the number of words in all caps in the title and body divided by the total number of words
         '''
         caps_index = 0
-        for word in self.title.split(' '):
-            if word.isupper():
-                caps_index += 1
+        if self.title:
+            for word in self.title.split(' '):
+                if word.isupper():
+                    caps_index += 1
         for word in self.text.split(' '):
             if word.isupper():
                 caps_index += 1

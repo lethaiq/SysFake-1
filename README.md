@@ -1,10 +1,16 @@
-# Summer-REU-Research
-<sup>Terrence Langer (Langer81) and Hunter S. DiCicco (dicicch)</sup>
+![](http://pike.psu.edu/images/sysfake.png?width=600)
+
+# [SysFake](https://sites.google.com/site/pikesysfake/home)
+<sup>Terrence Li (Langer81) and Hunter S. DiCicco (dicicch)</sup>
+
+<sup>Under the direction of Dr. Dongwon Lee, Ph.D., Dr. S. Shyam Sundar, Ph.D. and the SysFake team under Penn State's department of Journalism</sup>
+
+<sup>For information about how this research is supported, please visit the homepage linked above.</sup>
 
 ## Overview
 
 ### Problem Statement
-In an online news media environment ever-saturated with conflicts of interest and deceptive content and governed by readers' scarce attention, it is becoming increasingly difficult for the average consumer to tell genuine news apart. One can imagine a capability (say, a browser extension) that leverages statistical learning based on linguistic and metadata features of a news article in question to provide users with an estimate of whether an article is genuine or not.
+In an online news media environment governed by conflicting interests vying for readers' attention, it is becoming increasingly difficult for the average consumer to tell factual news apart from sensational, fake or otherwise. We imagine a capability (say, a browser extension) that leverages statistical learning based on linguistic and metadata features of a news article in question to provide users with an estimate of whether an article is genuine or not.
 
 ### Goal
 The goal of this project is to train and validate a multinomial C-Support Vector Machine for the purpose of classifying vectorized news articles under the following categories:
@@ -14,71 +20,88 @@ The goal of this project is to train and validate a multinomial C-Support Vector
 * **3:** Opinion
 * **5:** Polarized
 * **7:** Satire
+* **9:** Promotional Content
+* **11:** Corrections
 
 In doing so we hope to create a characteristic model consisting of only significant contributions from the most representative features.
 
+For more details on how these labels are defined, see the project's companion paper *[“Fake News” is not simply False Information: A Concept Explication and Taxonomy of Online Content](http://pike.psu.edu/publications/abs19.pdf)*
+
+The resulting model will then be tested against humans in an experiment in which both parties will be asked to classify the same set of new articles.
+
 ## Repository Content
 
-### Important files:
+### Important modules:
 
-`feature_extraction.py` - `ArticleVector()` will be your best friend this summer. `ArticleVector` will be how you vectorize an article into its respective features. You can find the features in the `fill_vector()` method.
+`feature_extraction.py` - `feature_extraction.ArticleVector` is a class that handles vectorization. You can find the definitions of the features (individual elements) in the `fill_vector()` method.
 
-`classifier.py` - This the initialization of the support vector machine. Basically the logistics of data preparation.
+`classifier.py` - Handles SVM initialization.
 
-`validator.py` - this will help you validate the accuracy of your model. 
+`validator.py` - Contains useful validation routines.
 
-the `.txt` files under the `data` directory are related to data collection. Their names should explain their respective uses. 
+### Important directories:
 
+`data` - Contains final vectors, some raw data and some intermediate data. This will be reorganized in the near future.
 
-Features from the Explication paper that have been implemented:
+Features from the companion explication paper that have been implemented so far:
 1. Reputable URL ending (taken from "reputable_news_sources.txt") | boolean
 2. whether or not a URL is from a reputable news source | boolean
-3. number of times "Today" is written / total number of words | double
+3. number of times "Today" is written / total number of words | float
 4. number of grammar mistakes | int
-5. number of quotations / total number of words | double
-6. number of past tense instances / total number of words | double 
-7. number of present tense instances / total number of words | double
-8. number of times "should" is written / total number of words | double
+5. number of quotations / total number of words | float
+6. number of past tense instances / total number of words | float 
+7. number of present tense instances / total number of words | float
+8. number of times "should" is written / total number of words | float
 9. whether or not "opinion" is in the URL | boolean
-10. number of words that are in all caps / total number of words | double
+10. number of words that are in all caps / total number of words | float
 11. whether or not a URL is from a satire news source | boolean
 12. number of apa errors | int
-13. number of proper nouns that occur / total number of words | double
-14. number of interjections that occur / total number of words | double
-15. number of times "you" occcurs / total number of words | double
-16. Whether a URL has a dot gov ending / total number of words | double
+13. number of proper nouns that occur / total number of words | float
+14. number of interjections that occur / total number of words | float
+15. number of times "you" occcurs / total number of words | float
+16. Whether a URL has a dot gov ending / total number of words | float
 17. whether a URL is from an unreputable site (taken from "unreputable_news_sources.txt") | boolean
 
-Important Features that have not been implemented:
-1. Fact-checking news articles
-2. Impartial reporting
-3. Conflict
-4. Human interest
-5. Prominence 
-6. Written by actual news staff
-7. Clear About Us section
-8. Emotionally charged words
+Important features that have not been implemented:
+1. Presence of fact-checking
+2. Verification of impartial reporting
+3. Narrative conflict
+4. Human-centric writing
+5. Prominence
+6. Written by named, publically known news staff
+7. Presence of an *About Us* section
+8. Presence of emotionally charged words
 9. Metadata
-10. un/verified sources
+10. Un/verified sources listed
 
-These are the more signficant missing features. Basically, the current implemented features are the simpler, more trivial. The above features will require a lot more work.
+## Current Performance:
 
-Current classifier accuracy using support vector machine:
-1. recall: [0.69642857 0.95535714 0.03125    0.30357143 0.89285714]
-2. precision [0.82539683 0.87346939 0.5        0.24548736 0.50632911]
-3. f1: [0.75544794 0.91257996 0.05882353 0.27145709 0.64620355]
-4. {1: 68, 2: 10, 3: 217, 5: 156, 7: 24}
-5. This model got 57.58928571428571 percent correct || 645 correct out of  1120
+### First trial performance on full dataset:
 
-The indices of the recall/precision/f1 lists represent the labels of the type of news article:
-1 = real news
-2 = fake news
-3 = opinion news
-5 = polarized news
-7 = satire data
+|                 | real | fake | opinion | polarized | satire |
+|-----------------|------|------|---------|-----------|--------|
+| recall          | 0.70 | 0.96 | 0.03    | 0.30      | 0.90   |
+| precision       | 0.83 | 0.88 | 0.50    | 0.25      | 0.51   |
+| f1              | 0.76 | 0.91 | 0.06    | 0.27      | 0.65   |
+| # misclassified | 68   | 10   | 217     | 156       | 24     |
 
-As you can see, with the current 5 categories that have been implemented, there is a 58% accuracy, in the case that the base level without a classifier, and just tossing a coin is 20%
-accurate. 
+57.59 percent correct overall, 645 correct out of  1120
+
+### Latest performance:
+
+Recall: `tp / (tp + fn)`
+
+Precision: `tp / (tp + fp)`
+
+|                      |  real  |  fake  |  opinion  | polarized |  satire  |  promotional  |  correction  |
+|----------------------|--------|--------|---------|-----------|----------|---------------|--------------|
+| mean 20-fold recall  | 0.9989 |  1.00  |  0.998  |  0.9996   |  0.9986  |     0.9783    |    0.9998    |
+| full set recall      | 1.00   |  1.00  |  1.00   |  1.00     |  1.00    |     0.99      |    1.00      |
+| mean 20-fold precision    | 0.9984 |  1.00  |  0.9966 |  0.9994   |  0.9982  |     0.98      |    0.9995    |
+| 20-fold # misclass   | 2      |  0     |  3      |  1        |  2       |     3         |    1         |
+| full set # misclass  | 2      |  0     |  5      |  1        |  2       |     1         |    2         |
+
+## Usage guide:
 
 In order to use the classifier, first you must collect data. To do this use the prepare_data() method from classifier.py. The input is a dictionary with data text files as keys and their corresponding labels. see training_file_dict as an example. 
 
@@ -89,7 +112,7 @@ In order to use the classifier, first you must collect data. To do this use the 
 ^^these lines of code will be how you run the classifier for validation. 
 
 ***Important note***
-data is separated out into urls, vectors, and then split into training and testing. There is no centralized collection of data. For example "Fake News" data will have 5 files:
+data is separated out into urls, vectors, and then split into training and testing. **There is currently no centralized collection of data** (this will be rectified soon). For example "Fake News" data will have 5 files:
 
 1. fake_news_urls-testing.txt - text file with fake news urls separated by spaces for testing 
 2. fake_news_urls-training.txt - text file with fake news urls separated by spacesA for training
@@ -98,13 +121,9 @@ data is separated out into urls, vectors, and then split into training and testi
 5. fake_news_vectors-training.txt - The corresponding fake news training URLs, from fake_news_urls-training but vectorized into their respective features.
 
 
-More importantly, get in contact with me so I can explain everything much more accurately:
+## Author Contacts
 
-````
-Cell: 814-308-4495
-Email: terrencegl10@gmail.com
-````
-
-Good Luck.
-
-
+|        name       |     cell     |          email         |
+|-------------------|--------------|------------------------|
+| Terence G. Li     | 814-308-4495 | terrencegl10@gmail.com |
+| Hunter S. DiCicco | 609-815-5122 |  hsdicicco@gmail.com   |
