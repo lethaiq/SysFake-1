@@ -1,6 +1,5 @@
 """
 Module Docstring Placeholder
-import os
 import time
 import random
 """
@@ -15,17 +14,17 @@ from feature_extraction import ArticleVector
 #Following is somewhat unnecessary, but may be useful if we ever separate the data.
 
 #each filename should be a file containing article urls separated by spaces.
-TRAINING_FILE_DICT = {'real_news_urls-training.txt' : 1,
-                      'fake_news_urls-training.txt' : 2,
-                      'opinion_urls-training.txt' : 3,
-                      'polarized_news_urls-training.txt' : 5,
-                      'satire_urls-training.txt' : 7}
+TRAINING_FILE_DICT = {'./data/real_news_urls-training.txt' : 1,
+                      './data/fake_news_urls-training.txt' : 2,
+                      './data/opinion_urls-training.txt' : 3,
+                      './data/polarized_news_urls-training.txt' : 5,
+                      './data/satire_urls-training.txt' : 7}
 
-TESTING_FILE_DICT = {'real_news_urls-testing.txt' : 1,
-                     'fake_news_urls-testing.txt' : 2,
-                     'opinion_urls-testing.txt' : 3,
-                     'polarized_news_urls-testing.txt' : 5,
-                     'satire_urls-testing.txt' : 7}
+TESTING_FILE_DICT = {'./data/real_news_urls-testing.txt' : 1,
+                     './data/fake_news_urls-testing.txt' : 2,
+                     './data/opinion_urls-testing.txt' : 3,
+                     './data/polarized_news_urls-testing.txt' : 5,
+                     './data/satire_urls-testing.txt' : 7}
 
 def extract_data(filename, label):
     """

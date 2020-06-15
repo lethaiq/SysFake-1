@@ -38,9 +38,9 @@ class ArticleVector:
     ##todo: assign this based on length of features in a global config
     NUM_DIMENSIONS = 18 # changes as unique features are added
 
-    reputable_news_sources = process_source_list("reputable_news_sources.txt")
-    satire_news_sources = process_source_list("satire_news_sources.txt")
-    unreputable_news_sources = process_source_list("unreputable_news_sources.txt")
+    reputable_news_sources = process_source_list("./data/reputable_news_sources.txt")
+    satire_news_sources = process_source_list("./data/satire_news_sources.txt")
+    unreputable_news_sources = process_source_list("./data/unreputable_news_sources.txt")
 
     def word_contains(self, string1="", string2=""):
         '''

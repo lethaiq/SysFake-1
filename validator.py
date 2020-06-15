@@ -9,21 +9,21 @@ from sklearn.metrics import recall_score, precision_score, f1_score #roc_auc_sco
 import numpy as np
 import classifier
 
-os.chdir("data")
+#os.chdir("./data")
 np.set_printoptions(precision=2)
 
 RANDOM_STATE = 4261998
 NUM_TRIALS = 30
 
 # combined -> opinion + polarized are same label
-TRAINING_FILE_DICT_UNCOMBINED = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
-                    'polarized_news_vectors-training.txt' : 5,'satire_vectors-training.txt' : 7}
-TRAINING_FILE_DICT_COMBINED = {'real_news_vectors-training.txt' : 1,'fake_news_vectors-training.txt' : 2,'opinion_vectors-training.txt' : 3,
-                    'polarized_news_vectors-training.txt' : 3,'satire_vectors-training.txt' : 7}
-TESTING_FILE_DICT_UNCOMBINED = {'real_news_vectors-testing.txt' : 1,'fake_news_vectors-testing.txt' : 2,'opinion_vectors-testing.txt' : 3,
-                    'polarized_news_vectors-testing.txt' : 5,'satire_vectors-testing.txt' : 7}
-TESTING_FILE_DICT_COMBINED = {'real_news_vectors-testing.txt' : 1,'fake_news_vectors-testing.txt' : 2,'opinion_vectors-testing.txt' : 3,
-                    'polarized_news_vectors-testing.txt' : 3,'satire_vectors-testing.txt' : 7}
+TRAINING_FILE_DICT_UNCOMBINED = {'./data/real_news_vectors-training.txt' : 1,'./data/fake_news_vectors-training.txt' : 2,'./data/opinion_vectors-training.txt' : 3,
+                    './data/polarized_news_vectors-training.txt' : 5,'./data/satire_vectors-training.txt' : 7}
+TRAINING_FILE_DICT_COMBINED = {'./data/real_news_vectors-training.txt' : 1,'./data/fake_news_vectors-training.txt' : 2,'./data/opinion_vectors-training.txt' : 3,
+                    './data/polarized_news_vectors-training.txt' : 3,'./data/satire_vectors-training.txt' : 7}
+TESTING_FILE_DICT_UNCOMBINED = {'./data/real_news_vectors-testing.txt' : 1,'./data/fake_news_vectors-testing.txt' : 2,'./data/opinion_vectors-testing.txt' : 3,
+                    './data/polarized_news_vectors-testing.txt' : 5,'./data/satire_vectors-testing.txt' : 7}
+TESTING_FILE_DICT_COMBINED = {'./data/real_news_vectors-testing.txt' : 1,'./data/fake_news_vectors-testing.txt' : 2,'./data/opinion_vectors-testing.txt' : 3,
+                    './data/polarized_news_vectors-testing.txt' : 3,'./data/satire_vectors-testing.txt' : 7}
 
 TRAIN_X_COMBINED, TRAIN_Y_COMBINED = classifier.retrieve_data(TRAINING_FILE_DICT_COMBINED, 1000)
 TRAIN_X_UNCOMBINED, TRAIN_Y_UNCOMBINED = classifier.retrieve_data(TRAINING_FILE_DICT_UNCOMBINED, 1000)
@@ -179,7 +179,5 @@ for file in TESTING_FILE_DICT_UNCOMBINED:
     find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
 
 # serialize and save current model
-os.chdir("../models")
-with open(f"model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.round(np.mean(RECALL), 2)}]pre[{np.round(np.mean(PRECISION), 2)}]f1[{np.round(np.mean(F1), 2)}].pickle", mode="wb") as fileout: #pylint:disable=C0301
+with open(f"models/model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.round(np.mean(RECALL), 2)}]pre[{np.round(np.mean(PRECISION), 2)}]f1[{np.round(np.mean(F1), 2)}].pickle", mode="wb") as fileout: #pylint:disable=C0301
     pickle.dump(SUPPORT_VECTOR_MACHINE, fileout)
-os.chdir("../")
