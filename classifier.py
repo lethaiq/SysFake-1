@@ -42,7 +42,7 @@ def extract_data(filename, label):
             print('IT FAILED')
             continue
     data_y = [label] * len(data_x)
-    return data_x, data_y #list of lists, list
+    return data_x, data_y # array_like[[],], array_like[]
 
 def count_lines(filename):
     """

@@ -2,6 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/jupyternotebook,jupyternotebooks,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=jupyternotebook,jupyternotebooks,python
 
+### user-specific ###
+purposes.txt
+*.bak
+
 ### JupyterNotebook ###
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
