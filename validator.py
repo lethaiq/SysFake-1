@@ -9,7 +9,6 @@ from sklearn.metrics import recall_score, precision_score, f1_score #roc_auc_sco
 import numpy as np
 import classifier
 
-#os.chdir("./data")
 np.set_printoptions(precision=2)
 
 RANDOM_STATE = 4261998
@@ -29,42 +28,6 @@ TRAIN_X_COMBINED, TRAIN_Y_COMBINED = classifier.retrieve_data(TRAINING_FILE_DICT
 TRAIN_X_UNCOMBINED, TRAIN_Y_UNCOMBINED = classifier.retrieve_data(TRAINING_FILE_DICT_UNCOMBINED, 1000)
 TEST_X_COMBINED, TEST_Y_COMBINED = classifier.retrieve_data(TESTING_FILE_DICT_COMBINED, 225) 
 TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED = classifier.retrieve_data(TESTING_FILE_DICT_UNCOMBINED, 225)
-
-def flatten_data(train_x, train_y):
-    '''
-    changes data to ensure that there is an equal amount of each category.(Should be a one time use for combining opinion and polarized news
-    '''
-    unique_labels = dict()
-    flattened_x = []
-    flattened_y = []
-    for label in train_y:
-        unique_labels[label] = unique_labels.get(label, 0) + 1
-    #maximum = max(unique_labels.values())
-    minimum = min(unique_labels.values())
-
-    for key in unique_labels:
-        if unique_labels[key] > minimum:
-            current_label = key
-            for i, j in enumerate(train_y):
-                if current_label == j:
-                    random_num = random.randrange(0,2)
-                    if random_num == 0:
-                        flattened_x.append(train_x[i])
-                        flattened_y.append(j)
-                    else:
-                        continue
-        #flattened_x.append(train_x[i]) #?
-        #flattened_y.append(train_y[i]) #?
-    return flattened_x, flattened_y
-
-def test_flatten_data():
-    """
-    Utility to test the functionality of `flatten_data`.
-    """
-    x = [[1,2,3],[1,2,3],[2,3,4],[2,3,4],[3,4,5],[3,4,5],[3,4,5],[3,4,5],[12,13,14]]
-    Y = [1, 1, 2, 2, 3, 3, 3, 3, 4]
-    flattened_x, flattened_y = flatten_data(x,y)
-    print(flattened_x, flattened_y)
 
 def validate(model, X, Y):
     '''
