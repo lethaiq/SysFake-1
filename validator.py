@@ -34,17 +34,16 @@ def validate(model, x_test, y_true):
     '''
     Placeholder
     '''
-    labels = model.classes_
     y_pred = model.predict(x_test)
 
     mcm = multilabel_confusion_matrix(y_true,
                                       y_pred,
-                                      labels=labels)
+                                      labels=model.classes_)
 
     counts = counts = [tp + fn for tp, _, fn, _ in 
                        [label_matrix.ravel() for label_matrix in mcm]]
 
-    return dict(zip(labels, counts)), zero_one_loss(y_true, y_pred, normalize=True)
+    return dict(zip(model.classes_, counts)), zero_one_loss(y_true, y_pred, normalize=True)
 
 def get_statistics(true_y, predictions, verbose=0):
     """
