@@ -60,32 +60,6 @@ def get_statistics(true_y, predictions, verbose=0):
     #print('auc:', str(auc)) a
     return [recall, precision, f1]
 
-###############################
-####Support Vector Machine#####
-###############################
-#os.chdir("../models")
-SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
-                                                   TRAIN_Y_UNCOMBINED,
-                                                   C=3.0,
-                                                   kernel='linear',
-                                                   gamma='auto',
-                                                   random_state=RANDOM_STATE,
-                                                   verbose=False)
-#SUBSET_MODELS = glob.glob("./*subset*.pickle")
-
-#with open(max(SUBSET_MODELS, key=os.path.getctime), mode='rb') as filein:
-#    SUPPORT_VECTOR_MACHINE = pickle.load(filein)
-SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED)
-#SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
-STATS = get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS, verbose=1)
-(RECALL, PRECISION, F1) = *STATS,
-validate(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
-
-# SUPPORT_VECTOR_MACHINE_uncombined = classifier.svm_classifier(TRAIN_Y_UNCOMBINED, TRAIN_Y_UNCOMBINED)
-# SVM_PREDICTIONS_uncombined = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
-# get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS)
-# validate(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
-
 def find_errors(model, vector_data_file, label):
     '''
     returns a dictionary that tells you how many of each category the model incorrectly predicted. 
@@ -123,10 +97,38 @@ def find_errors(model, vector_data_file, label):
 # print('False negatives for Polarized News data:')
 # find_errors(SUPPORT_VECTOR_MACHINE, 'polarized_news_vectors-testing.txt', 5)
 
-for file in TESTING_FILE_DICT_UNCOMBINED:
-    title = file[:file.index('_')]
-    print(f"False negatives for {title} data ({TESTING_FILE_DICT_UNCOMBINED[file]!s})")
-    find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
+###############################
+####Support Vector Machine#####
+###############################
+#os.chdir("../models")
+SUPPORT_VECTOR_MACHINE = classifier.svm_classifier(TRAIN_X_UNCOMBINED,
+                                                   TRAIN_Y_UNCOMBINED,
+                                                   C=3.0,
+                                                   kernel='linear',
+                                                   gamma='auto',
+                                                   random_state=RANDOM_STATE,
+                                                   verbose=False)
+#SUBSET_MODELS = glob.glob("./*subset*.pickle")
+
+#with open(max(SUBSET_MODELS, key=os.path.getctime), mode='rb') as filein:
+#    SUPPORT_VECTOR_MACHINE = pickle.load(filein)
+SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED)
+#SVM_PREDICTIONS = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
+STATS = get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS, verbose=1)
+(RECALL, PRECISION, F1) = *STATS,
+validate(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
+
+# SUPPORT_VECTOR_MACHINE_uncombined = classifier.svm_classifier(TRAIN_Y_UNCOMBINED, TRAIN_Y_UNCOMBINED)
+# SVM_PREDICTIONS_uncombined = classifier.run_predictions(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
+# get_statistics(TEST_Y_UNCOMBINED, SVM_PREDICTIONS)
+# validate(SUPPORT_VECTOR_MACHINE, TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED)
+
+
+# TODO: delete the following in favor of `sklearn.metrics.multilabel_confusion_matrix`
+#for file in TESTING_FILE_DICT_UNCOMBINED:
+#    title = file[:file.index('_')]
+#    print(f"False negatives for {title} data ({TESTING_FILE_DICT_UNCOMBINED[file]!s})")
+#    find_errors(SUPPORT_VECTOR_MACHINE, file, TESTING_FILE_DICT_UNCOMBINED[file])
 
 # serialize and save current model
 with open(f"models/model_kernel[{SUPPORT_VECTOR_MACHINE.kernel}]gamma[{SUPPORT_VECTOR_MACHINE.gamma}]rec[{np.round(np.mean(RECALL), 2)}]pre[{np.round(np.mean(PRECISION), 2)}]f1[{np.round(np.mean(F1), 2)}].pickle", mode="wb") as fileout: #pylint:disable=C0301
