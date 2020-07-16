@@ -1,6 +1,7 @@
 import wandb
 import pandas as pd
 
+from sklearn.metrics import recall_score
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
@@ -16,7 +17,6 @@ x, y = *(d_full.drop('label', axis=1),
          d_full['label']),
 x, y = map(lambda j: j.to_numpy(), (x,y))
 
-x_train, y_train, x_test, y_test = train_test_split(x, y, test_size=0.1, shuffle=True, random_state=RANDOM_STATE)
 FEATURES = d_full.drop('label', axis=1).columns
 
 def train():
@@ -24,6 +24,7 @@ def train():
         'C': 1.0,
         'gamma': 10.0
     }
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1, shuffle=True, random_state=RANDOM_STATE)
     wandb.init(config=config_defaults, magic=True)
     model = SVC(C=wandb.config.C, gamma=wandb.config.gamma, probability=True)
     model.fit(x_train, y_train)
@@ -36,5 +37,7 @@ def train():
                                   is_binary=False,
                                   model_name='SVC',
                                   feature_names=FEATURES)
+    wandb.log({'Weighted Recall': recall_score(y_true, y_pred, average='weighted'),
+               'Micro-Averaged Recall': recall_score(y_true, y_pred, average='micro')})
     wandb.log({'roc': wandb.plots.ROC(y_test, y_probas, labels=LABELS)})
     wandb.log({'pr': wandb.plots.precision_recall(y_test, y_probas, plot_micro=True, labels=LABELS)})
