@@ -1,7 +1,9 @@
+import warnings
 import os
 
 import goose3 as goose
 import language_check
+import tldextract
 import requests
 import nltk
 
@@ -111,7 +113,7 @@ class ArticleVector:
 
     def validate(self):
         if self.text == '':
-            raise Exception('The text for this article is empty.')
+            warnings.Warn('The text for this article is empty.')
 
     def clean_url(self):
         '''
@@ -154,7 +156,7 @@ class ArticleVector:
     def quotation_index(self):
         num_quotations = 0
         for letter in self.text:
-            if letter == '"':
+            if letter == '\"':
                 num_quotations += 1
         return num_quotations / self.num_words
 
@@ -185,42 +187,21 @@ class ArticleVector:
             if pair[1] == 'VBP' or pair[1] == 'VBZ' or pair[1] == 'VBG': # alter later if bad
                 present_index += 1
         return present_index / self.num_words
-
+        
     def url_ending_index(self):
         '''
-        returns 1 if url has reputable ending, 0 otherwise
+        returns 1 if url has reputable ending, 0 otherwise and None if the url is empty.
         '''
-        reputable_endings = ['.com', '.gov', '.org']
-        if self.url == "":
-            return None
-        if self.num_periods == 1:
-            period_index = ArticleVector.nth_index(self.url, '.', 1)
-            ending = self.url[period_index : period_index + 4]
-        elif self.num_periods == 2:
-            period_index = ArticleVector.nth_index(self.url, '.', 2)
-            ending = self.url[period_index : period_index + 4]
-        else:
-            return 0
-        if ending in reputable_endings:
-            return 1
-        else:
-            return 0
+        reputable_endings = ['com', 'gov', 'org']
+        ending = tldextract.extract(self.url).suffix
+        return int(ending in reputable_endings) if self.url else None
 
     def dot_gov_ending_index(self):
-        if self.url == "":
-            return None
-        if self.num_periods == 1:
-            period_index = ArticleVector.nth_index(self.url, '.', 1)
-            ending = self.url[period_index : period_index + 4]
-        elif self.num_periods == 2:
-            period_index = ArticleVector.nth_index(self.url, '.', 2)
-            ending = self.url[period_index : period_index + 4]
-        else:
-            return 0
-        if ending == ".gov":
-            return 1
-        else:
-            return 0
+        '''
+        returns 1 if url ends in .gov, 0 otherwise and None if the url is empty.
+        '''
+        ending = tldextract.extract(self.url).suffix
+        return int(ending == 'gov') if self.url else None
 
     def apa_index(self):
         '''
@@ -253,7 +234,7 @@ class ArticleVector:
 
     def opinion_index(self):
         '''
-        returns 1 if 'opinion' or 'commentary' shows up in the url of an article
+        returns 1 if 'opinion', 'editorial' or 'commentary' shows up in the url of an article
         '''
         if 'opinion' in self.url or 'commentary' in self.url or 'editorial' in self.url:
             return 1

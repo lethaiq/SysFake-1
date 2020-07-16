@@ -106,7 +106,7 @@ nbdime=1.1.0=pypi_0
 nbformat=5.0.6=py_0
 newspaper3k=0.2.8=py37_0
 ninja=1.10.0=h1ad3211_0
-nltk=3.4.4=py_0
+nltk=3.4.5=py_0
 nodejs=14.3.0=0
 notebook=6.0.3=py37hc8dfbb8_0
 numpy=1.18.4=py37hae9e721_0
