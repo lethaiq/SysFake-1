@@ -122,9 +122,7 @@ def sparse_matrix_extraction(sparse_matrix):
 	takes in sparse matrix of article no., word mappings, and tfidfs
 	Returns a completed feature matrix.
 	'''
-	
-
-
+    pass
 
 url_stuff = extract_urls('url_training_set.txt')
 article_links = url_stuff[0]

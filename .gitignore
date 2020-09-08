@@ -4,11 +4,16 @@
 
 ### user-specific ###
 purposes.txt
+TODO.txt
 *.bak
 
 ### JupyterNotebook ###
 .ipynb_checkpoints
-*/.ipynb_checkpoints/*
+**/.ipynb_checkpoints/*
+*-checkpoint.ipynb
+
+### wandb ###
+**/wandb/**
 
 # Remove previous ipynb_checkpoints
 # git rm -r .ipynb_checkpoints/
@@ -17,10 +22,6 @@ purposes.txt
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
-
-
-# Remove previous ipynb_checkpoints
-git rm -r .ipynb_checkpoints/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
