@@ -5,11 +5,11 @@ import os
 
 from collections import Counter
 
-from sklearn.metrics import recall_score, precision_score, f1_score #roc_auc_score
+from sklearn.metrics import zero_one_loss, multilabel_confusion_matrix
+from sklearn.metrics import recall_score, precision_score, f1_score
 import numpy as np
 import classifier
 
-#os.chdir("./data")
 np.set_printoptions(precision=2)
 
 RANDOM_STATE = 4261998
@@ -27,73 +27,23 @@ TESTING_FILE_DICT_COMBINED = {'./data/real_news_vectors-testing.txt' : 1,'./data
 
 TRAIN_X_COMBINED, TRAIN_Y_COMBINED = classifier.retrieve_data(TRAINING_FILE_DICT_COMBINED, 1000)
 TRAIN_X_UNCOMBINED, TRAIN_Y_UNCOMBINED = classifier.retrieve_data(TRAINING_FILE_DICT_UNCOMBINED, 1000)
-TEST_X_COMBINED, TEST_Y_COMBINED = classifier.retrieve_data(TESTING_FILE_DICT_COMBINED, 225) 
+TEST_X_COMBINED, TEST_Y_COMBINED = classifier.retrieve_data(TESTING_FILE_DICT_COMBINED, 225)
 TEST_X_UNCOMBINED, TEST_Y_UNCOMBINED = classifier.retrieve_data(TESTING_FILE_DICT_UNCOMBINED, 225)
 
-def flatten_data(train_x, train_y):
+def validate(model, x_test, y_true):
     '''
-    changes data to ensure that there is an equal amount of each category.(Should be a one time use for combining opinion and polarized news
+    Placeholder
     '''
-    unique_labels = dict()
-    flattened_x = []
-    flattened_y = []
-    for label in train_y:
-        unique_labels[label] = unique_labels.get(label, 0) + 1
-    #maximum = max(unique_labels.values())
-    minimum = min(unique_labels.values())
+    y_pred = model.predict(x_test)
 
-    for key in unique_labels:
-        if unique_labels[key] > minimum:
-            current_label = key
-            for i, j in enumerate(train_y):
-                if current_label == j:
-                    random_num = random.randrange(0,2)
-                    if random_num == 0:
-                        flattened_x.append(train_x[i])
-                        flattened_y.append(j)
-                    else:
-                        continue
-        #flattened_x.append(train_x[i]) #?
-        #flattened_y.append(train_y[i]) #?
-    return flattened_x, flattened_y
+    mcm = multilabel_confusion_matrix(y_true,
+                                      y_pred,
+                                      labels=model.classes_)
 
-def test_flatten_data():
-    """
-    Utility to test the functionality of `flatten_data`.
-    """
-    x = [[1,2,3],[1,2,3],[2,3,4],[2,3,4],[3,4,5],[3,4,5],[3,4,5],[3,4,5],[12,13,14]]
-    Y = [1, 1, 2, 2, 3, 3, 3, 3, 4]
-    flattened_x, flattened_y = flatten_data(x,y)
-    print(flattened_x, flattened_y)
+    counts = counts = [tp + fn for tp, _, fn, _ in 
+                       [label_matrix.ravel() for label_matrix in mcm]]
 
-def validate(model, X, Y):
-    '''
-    model - sklearn model with fit/predict
-    X  - feature matrix i.e. list of lists
-    Y  - corresponding y values
-    '''
-    statistics_dict = {}
-    predictions = []
-    for vector in X:
-        predictions.extend(model.predict(np.array(vector).reshape(1, -1)))
-    assert len(Y) == len(predictions), 'bruh the predictions and test_Y don\'t match in length'
-    total = len(Y)
-    #print(predictions)
-    correct = 0
-    for i, j in enumerate(predictions):
-        #print(Y[i] == predictions[i])
-        #print(float(predictions[i]))
-        #print(Y[i])
-
-        if float(j) == float(Y[i]):
-            correct += 1
-        else:
-            statistics_dict[Y[i]] = statistics_dict.get(Y[i], 0) + 1
-    percent_correct = (correct / total) * 100
-
-    print(statistics_dict)
-    print(f"This model got {np.round(np.mean(percent_correct), 2)!s}% correct || {correct!s} out of {total!s}.")
-    return percent_correct
+    return dict(zip(model.classes_, counts)), zero_one_loss(y_true, y_pred, normalize=True)
 
 def get_statistics(true_y, predictions, verbose=0):
     """

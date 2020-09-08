@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import warnings
 import os
 
@@ -5,14 +6,48 @@ import goose3 as goose
 import language_check
 import tldextract
 import requests
+=======
+"""
+feature_extraction.py
+---------------------
+
+Contains the `ArticleVector` object, the all-in-one interface
+for scraping and vectorizing news articles as both URLs and given text.
+
+Dependencies:
+-------------
+* language_check
+* tldextract
+* nltk
+* sklearn
+* goose3
+* pyapa
+* waybackmachine
+"""
+
+import warnings
+#import pdb
+#import os
+
+from collections import Counter, deque
+
+import goose3
+import language_check
+import tldextract
+#import requests
+>>>>>>> major-refactor
 import nltk
 
-from ap_style_checker import StyleChecker
-from newspaper import Article
+from lxml.etree import ParseError, ParserError #pylint:disable=no-name-in-module
 from goose3 import Goose
 from pyapa import pyapa
 
-def process_source_list(filename="", delimiter='\n'):
+from waybackmachine import WaybackMachine
+from waybackmachine.fetch import WaybackMachineError
+#from ap_style_checker import StyleChecker
+#from newspaper import Article
+
+def process_source_list(filename=""):
     """
     ===
     Utility function to preprocess and read in items from a text file to a list.
@@ -25,109 +60,91 @@ def process_source_list(filename="", delimiter='\n'):
         delimiter: str
             Character which separates discrete items in the text file.
     """
-    with open(filename, 'r') as filein:
+    with open(filename, mode='r') as filein:
         list_before_processing = filein.readlines()
-        return [j.replace(" ", "").lower().strip() for i, j in enumerate(list_before_processing)]
-
+        return [j.replace(" ", "").lower().strip()
+                for i, j in enumerate(list_before_processing)]
 
 class ArticleVector:
     """
     Purpose: Extract a vector of articles/urls to be stored in feature matrix
     """
-
     ##### CLASS ATTRIBUTES #####
-
     ##todo: assign this based on length of features in a global config
-    NUM_DIMENSIONS = 18 # changes as unique features are added
+    NUM_DIMENSIONS = 18
 
     reputable_news_sources = process_source_list("./data/reputable_news_sources.txt")
     satire_news_sources = process_source_list("./data/satire_news_sources.txt")
     unreputable_news_sources = process_source_list("./data/unreputable_news_sources.txt")
 
-    def word_contains(self, string1="", string2=""):
-        '''
-        return true if string1 is inside string2 as long as the order fixed.
-        ex: word_contains('wsj', 'wallstreetjournal')  -> True
-        ex: word_contains('nytimes', 'thenewyorktimes') -> True
-        ex: word_contains('wsj', 'journalstreetwall') -> False
-        '''
-        if string1 == '' and string2 != '':
-            return True
-        if string1 != '' and string2 == '':
-            return False
-        if string1 == '' and string2 == '':
-            return True
-        string1_first = string1[0]
-        string2_first = string2[0]
-        if string1_first == string2_first:
-            return ArticleVector.word_contains(string1[1:], string2[1:])
-        return ArticleVector.word_contains(string1, string2[1:])
-
-    def nth_index(self, string, char, n=0, index=0):
-        '''
-        return the index of the nth occurence of a character in a string
-        string - string of interest
-        char - char we're finding the index of 
-        n - nth occurence of char
-        index - index of char
-        '''
-        if n == 0:
-            return index - 1
-        elif string == "":
-            raise Exception('Substring not found')
-        elif string[0] == char:
-            return ArticleVector.nth_index(string[1:], char, n - 1, index + 1)
-        elif string[0] != char:
-            return ArticleVector.nth_index(string[1:], char, n, index + 1)
-
-    def num_periods_in_url(self, url=""):
-        period_count = 0
-        for letter in url:
-            if letter == '.':
-                period_count += 1
-        return period_count
     ##### INSTANCE ATTRIBUTES #####
 
-    def __init__(self, url="", text="", title=""):
+    def __init__(self, url="", text="", title="", latest_snapshot=True):
         self.vector = [0] * ArticleVector.NUM_DIMENSIONS
         self.url = url
-        self.num_periods = ArticleVector.num_periods_in_url(self.url)
-        self.cleaned_url = self.clean_url()
-        self.text = text
+        self.cleaned_url = self._clean_url()
+
         if text and url: # usr enters both
             #print('test')
             #article = self.extract_article()
             self.title = title
             self.text = text
         elif not text and url: # user enters url
-            article = self.extract_article()
+            article = self._extract_article(latest_snapshot)
             self.title = article.title
             self.text = article.cleaned_text
         elif text and not url: # user enters article text
             self.title = title
             self.text = text
-        self.num_words = len(self.text.split(' '))
-        self.paired_tokens = self.tokenize() #list of tuples ex. [('helped', 'VBD')]
-        self.validate()
-        self.fill_vector()
 
+<<<<<<< HEAD
     def validate(self):
         if self.text == '':
             warnings.Warn('The text for this article is empty.')
+=======
+        self.char_counts = Counter(self.text)
+>>>>>>> major-refactor
 
-    def clean_url(self):
+        self.paired_tokens = self.tokenize() #list of pairs ex. [('helped', 'VBD')]
+
+        # not entirely sure about this implementation yet -h
+        # `tokenize` returns a list of pairs, which the dict constructor uses natively
+        self.token_count = nltk.probability.FreqDist(word.lower()
+                                                     for word in
+                                                     dict(self.paired_tokens).keys())
+
+        if self.text == "":
+            warnings.warn('The text for this article is empty.')
+            self.num_words = 1 # no division by zero
+        else:
+            self.num_words = sum(self.token_count.values())
+
+        self.part_of_speech_count = Counter(dict(self.paired_tokens).values())
+        self.vector = [self.url_ending_index(),
+                       self.from_reputable_source_index(),
+                       self.today_index(),
+                       self.grammar_index(),
+                       self.quotation_index(),
+                       self.past_tense_index(),
+                       self.present_tense_index(),
+                       self.should_index(),
+                       self.opinion_index(),
+                       self.all_caps_index(),
+                       self.from_satire_source_index(),
+                       self.exclamation_index(),
+                       self.apa_index(),
+                       self.name_source_index(),
+                       self.interjection_index(),
+                       self.you_index(),
+                       self.dot_gov_ending_index(),
+                       self.from_unreputable_source_index()]
+
+    def _clean_url(self):
         '''
-        ex: clean_url('https://www.nytimes.com/ijaw;efoija;wdlfkja;weifj') -> 'nytimes'
+        Extract an ArticleVector's URL domain name, if it possesses a URL.
+        ex: clean_url('https://www.nytimes.com/<article identifiers>') -> 'nytimes'
         '''
-        if self.num_periods == 1:
-            period_index = ArticleVector.nth_index(self.url, '.', 1)
-            slash_index = ArticleVector.nth_index(self.url, '/', 2)
-            return self.url[slash_index + 1 : period_index]
-        elif self.num_periods == 2:
-            first_period = ArticleVector.nth_index(self.url, '.', 1)
-            second_period = ArticleVector.nth_index(self.url, '.', 2)
-            return self.url[first_period + 1 : second_period]
-        return ''
+        return tldextract.extract(self.url).domain if self.url else ''
 
     def grammar_index(self):
         '''
@@ -135,30 +152,57 @@ class ArticleVector:
         '''
 
         checker = language_check.LanguageTool('en-US')
-        matches = checker.check(self.text) # of typos.
+        matches = checker.check(self.text) # of grammar errors
         return len(matches) / self.num_words
-        #return 0
 
-    def extract_article(self):
+    def _extract_article(self, use_latest_snapshot):
         '''
         returns a goose article object
         '''
-        gooser = Goose({'browser_user_agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
-                       'strict': False,
-                       'enable_image_fetching':False})
+        params = {'browser_user_agent':"Mozilla/5.0"
+                                       "(X11; Ubuntu; Linux x86_64; rv:52.0)"
+                                       "Gecko/20100101 Firefox/52.0",
+                  'strict': False,
+                  'enable_image_fetching':False}
+        gooser = Goose(params)
         try:
             article = gooser.extract(url=self.url)
-        except requests.exceptions.ReadTimeout:
-            print('Timeout occurred...')
-            article = goose.Article()
+        except Exception as scrape_error: #pylint:disable=broad-except
+            warnings.warn(f"{type(scrape_error).__name__} occurred, falling back to WaybackMachine")
+            if use_latest_snapshot:
+                try:
+                    snap_url = next(iter(WaybackMachine(self.url)))[0].url
+                    article = gooser.extract(url=snap_url)
+                except StopIteration:
+                    warnings.warn("No snapshots available, returning empty...")
+                    article = goose3.Article()
+                except (ParseError, ParserError):
+                    warnings.warn("Empty document, LXML cannot parse. Returning empty...")
+                    article = goose3.Article()
+                except WaybackMachineError:
+                    warnings.warn("Bad response from archive.org, returning empty...")
+                    article = goose3.Article()
+                except ValueError:
+                    warnings.warn("Various LXML/Goose error, returning empty...")
+                    article = goose3.Article()
+            else:
+                snap_url = deque(WaybackMachine(self.url))[0][0].url
+                article = gooser.extract(url=snap_url)
         return article
 
     def quotation_index(self):
+<<<<<<< HEAD
         num_quotations = 0
         for letter in self.text:
             if letter == '\"':
                 num_quotations += 1
         return num_quotations / self.num_words
+=======
+        '''
+        Placeholder
+        '''
+        return self.char_counts['\"'] / self.num_words
+>>>>>>> major-refactor
 
     def tokenize(self):
         '''
@@ -172,20 +216,17 @@ class ArticleVector:
         '''
         returns the number of past tense verbs in the text
         '''
-        past_index = 0
-        for pair in self.paired_tokens:
-            if pair[1] == 'VBD' or pair[1] == 'VBN':
-                past_index += 1
+        past_index = sum([self.part_of_speech_count['VBD'],
+                          self.part_of_speech_count['VBN']])
         return past_index / self.num_words
 
     def present_tense_index(self):
         '''
         returns the number of present tense verbs in the text over the
         '''
-        present_index = 0
-        for pair in self.paired_tokens:
-            if pair[1] == 'VBP' or pair[1] == 'VBZ' or pair[1] == 'VBG': # alter later if bad
-                present_index += 1
+        present_index = sum([self.part_of_speech_count['VBP'],
+                             self.part_of_speech_count['VBZ'],
+                             self.part_of_speech_count['VBG']])
         return present_index / self.num_words
         
     def url_ending_index(self):
@@ -215,67 +256,68 @@ class ArticleVector:
         '''
         returns the number of times "today" appears in the article text
         '''
-        today_count = 0
-        for word in self.text.split(' '):
-            if 'today' in word or 'Today' in word:
-                today_count += 1
+        today_count = self.token_count['today']
         return today_count / self.num_words
 
     def should_index(self):
         '''
         returns the number of times "should" appears over the total number of words
         '''
-
-        should_count = 0
-        for word in self.text.split(' '):
-            if 'should' in word or 'Should' in word:
-                should_count += 1
+        should_count = self.token_count['should']
         return should_count / self.num_words
 
     def opinion_index(self):
         '''
         returns 1 if 'opinion', 'editorial' or 'commentary' shows up in the url of an article
         '''
-        if 'opinion' in self.url or 'commentary' in self.url or 'editorial' in self.url:
-            return 1
-        else:
-            return 0
+        return 1 if any(j in self.url
+                        for j in ('opinion', 'commentary', 'editorial')) else 0
+        #if 'opinion' in self.url or 'commentary' in self.url or 'editorial' in self.url:
+        #    return 1
+        #else:
+        #    return 0
 
     def from_reputable_source_index(self):
         '''
         returns 1 if urls has reputable source in it
         '''
+        return 1 if any(j in self.cleaned_url
+                        for j in ArticleVector.reputable_news_sources) else 0
         #print(ArticleVector.reputable_news_sources)
-        for source in ArticleVector.reputable_news_sources:
-            #print(source)
-            if source in self.cleaned_url:
-                return 1
-        return 0
+        #for source in ArticleVector.reputable_news_sources:
+        #    #print(source)
+        #    if source in self.cleaned_url:
+        #        return 1
+        #return 0
 
     def all_caps_index(self):
         '''
-        return the number of words in all caps in the title and body divided by the total number of words
+        return the number of words in all caps
+        in both the title and body divided by the total number of words
         '''
         caps_index = 0
-        if self.title:
-            for word in self.title.split(' '):
-                if word.isupper():
-                    caps_index += 1
-        for word in self.text.split(' '):
-            if word.isupper():
-                caps_index += 1
+        caps_index += sum([1 if word.isupper() else 0
+                           for word in self.title.split(' ')])
+        caps_index += sum([1 if word.isupper() else 0
+                           for word in self.text.split(' ')])
         return caps_index / self.num_words
 
     def from_satire_source_index(self):
         '''
         returns 1 if link is from satire news source
         '''
-        for source in ArticleVector.satire_news_sources:
-            if self.cleaned_url in source: # only different because satire is full link 
-                return 1
-        return 0
+        return 1 if any(j in self.cleaned_url
+                        for j in ArticleVector.satire_news_sources) else 0
+        #for source in ArticleVector.satire_news_sources:
+        #    # only different because satire is full link
+        #    if self.cleaned_url in source:
+        #        return 1
+        #return 0
 
     def from_unreputable_source_index(self):
+        '''
+        Placeholder
+        '''
         for source in ArticleVector.unreputable_news_sources:
             #print(source)
             if source in self.url:
@@ -287,86 +329,40 @@ class ArticleVector:
         returns number of exclamation points over total num of words.
         '''
 
-        exclamation_index = 0
-        for letter in self.text:
-            if letter == '!':
-                exclamation_index += 1
+        exclamation_index = self.char_counts['!']
         return exclamation_index / self.num_words
 
     def name_source_index(self):
         '''
         return the number of proper nouns in the text / total words
         '''
-        num_prop_nouns = 0
-        for pair in self.paired_tokens:
-            if pair[1] == 'NNP':
-                num_prop_nouns += 1
+        num_prop_nouns = self.part_of_speech_count['NNP']
         return num_prop_nouns / self.num_words
 
     def interjection_index(self):
         '''
         return the number of interjections in the text / total words
         '''
-        num_interjections = 0
-        for pair in self.paired_tokens:
-            if pair[1] == 'UH':
-                num_interjections += 1
+        num_interjections = self.part_of_speech_count['UH']
         return num_interjections / self.num_words
 
     def you_index(self):
         '''
         return the number of times "you" shows up in the text / total words
         '''
-        num_yous = 0
-        for word in self.text.split(' '):
-            if word == 'you':
-                num_yous += 1
+        num_yous = self.token_count['you']
+        #for word in self.text.split(' '):
+        #    if word == 'you':
+        #        num_yous += 1
         return num_yous / self.num_words
 
-    def ap_style_index(self):
+    #def ap_style_index(self):
+    #    '''
+    #    Placeholder
+    #    '''
+    #    checker = StyleChecker(self.text, self.title)
+    #    return checker.total_errors
 
-        checker = StyleChecker(self.text, self.title)
-        return checker.total_errors
-
-    def fill_vector(self):
-        '''
-        calls all the methods created to fill in self.vector
-        '''
-        # reputable url ending feature 
-        self.vector[0] = self.url_ending_index()
-        # reputable news source feature 
-        self.vector[1] = self.from_reputable_source_index()
-        # contains 'today' feature
-        self.vector[2] = self.today_index()
-        # number of grammar mistakes feature
-        self.vector[3] = self.grammar_index()
-        # number of times a "" shows up.
-        self.vector[4] = self.quotation_index()
-        # number of times a past tense verb shows up
-        self.vector[5] = self.past_tense_index()
-        # number of times a present tense verb shows up / number of total words
-        self.vector[6] = self.present_tense_index()
-        # number of times "should" shows up / number of total words
-        self.vector[7] = self.should_index()
-        # whether or not opinion shows up in url
-        self.vector[8] = self.opinion_index()
-        # number of all caps words / number of total words
-        self.vector[9] = self.all_caps_index()
-        # whether article is from satire news outlet.
-        self.vector[10] = self.from_satire_source_index()
-        # number of exclamation points / number of total words
-        self.vector[11] = self.exclamation_index()
-        # number of apa errors in an article
-        self.vector[12] = self.apa_index()
-        # number of proper nouns in article / number of total words
-        self.vector[13] = self.name_source_index()
-        # number of interjections in article / number of total words
-        self.vector[14] = self.interjection_index()
-        # number of times you shows up in article / number of total words
-        self.vector[15] = self.you_index()
-        # 1 if url ending is .gov, for persuasive information
-        self.vector[16] = self.dot_gov_ending_index()
-        # 1 if article is from unreputable source
-        self.vector[17] = self.from_unreputable_source_index()
-        # number of ap style violations
-        #self.vector[18] = self.ap_style_index()
+if __name__ == "__main__":
+    TEST_URL = "http://www.wsj.com/news/us/"
+    v = ArticleVector(url=TEST_URL)
