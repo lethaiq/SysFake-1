@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import warnings
-import os
-
-import goose3 as goose
-import language_check
-import tldextract
-import requests
-=======
 """
 feature_extraction.py
 ---------------------
@@ -35,7 +26,6 @@ import goose3
 import language_check
 import tldextract
 #import requests
->>>>>>> major-refactor
 import nltk
 
 from lxml.etree import ParseError, ParserError #pylint:disable=no-name-in-module
@@ -97,13 +87,7 @@ class ArticleVector:
             self.title = title
             self.text = text
 
-<<<<<<< HEAD
-    def validate(self):
-        if self.text == '':
-            warnings.Warn('The text for this article is empty.')
-=======
         self.char_counts = Counter(self.text)
->>>>>>> major-refactor
 
         self.paired_tokens = self.tokenize() #list of pairs ex. [('helped', 'VBD')]
 
@@ -191,18 +175,10 @@ class ArticleVector:
         return article
 
     def quotation_index(self):
-<<<<<<< HEAD
-        num_quotations = 0
-        for letter in self.text:
-            if letter == '\"':
-                num_quotations += 1
-        return num_quotations / self.num_words
-=======
         '''
         Placeholder
         '''
         return self.char_counts['\"'] / self.num_words
->>>>>>> major-refactor
 
     def tokenize(self):
         '''
@@ -228,7 +204,7 @@ class ArticleVector:
                              self.part_of_speech_count['VBZ'],
                              self.part_of_speech_count['VBG']])
         return present_index / self.num_words
-        
+
     def url_ending_index(self):
         '''
         returns 1 if url has reputable ending, 0 otherwise and None if the url is empty.
