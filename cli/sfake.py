@@ -2,19 +2,17 @@ import os
 import joblib
 import warnings
 
+import pandas as pd
+
+import nltk
+import torch
+import click
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from transformers import BertTokenizer, BertModel
 
 from pyfiglet import Figlet
-
-import nltk
-
-import torch
-
-import click
-
-import pandas as pd
 
 import feature_extraction as fe
 
@@ -36,6 +34,10 @@ def tfidf_transform(single_text, **tfidf_kwargs):
     return TfidfVectorizer(**tfidf_kwargs).fit_transform(TRAIN_TEXTS['text'].to_list() + [single_text])[-1]
 
 def bert_transform(single_text):
+    """
+    Create a BERT embedding representation from a single text by passing the text through the pre-trained network.
+    """
+    #TODO: pass the pooling strategy as a command line option
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     model = BertModel.from_pretrained('bert-base-uncased',
                                   output_hidden_states = True).to(DEVICE)
