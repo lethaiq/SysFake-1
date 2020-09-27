@@ -19,12 +19,12 @@ import feature_extraction as fe
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
                         version_option_names=['-V', '--version'])
 
-CLASS_DICT = dict(zip((1, 2, 3, 5, 7, 9, 11), ('real', 'fake', 'opinion', 'polarized', 'satire', 'promotional', 'correction')))
-
-click.echo(Figlet(font='larry3d').renderText('sysfake'))
+CLASS_DICT = dict(zip((1, 2, 3, 5, 7, 9, 11),
+                      ('real', 'fake', 'opinion', 'polarized', 'satire', 'promotional', 'correction')))
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+click.echo(Figlet(font='larry3d').renderText('sysfake'))
 click.echo(f"Using device: {DEVICE}")
 
 def tfidf_transform(single_text, **tfidf_kwargs):
@@ -76,10 +76,12 @@ def bert_transform(single_text):
         # see: https://mccormickml.com/2019/05/14/BERT-word-embeddings-tutorial/#35-pooling-strategy--layer-choice
         token_vecs = torch.cat(hidden_states[-5:-1], dim=2).squeeze()
 
-        # produce a columnwise average of the 
+        # produce a columnwise average of all of the token embeddings to form a sentence embedding
         sentence_embedding = torch.mean(token_vecs, dim=0)
         sent_embeddings.append(sentence_embedding)
 
+    # pooling step
+    # concatenate all of the sentence embeddings into one large document embedding
     document = torch.stack(sent_embeddings)
     return document.cpu().numpy()
 
@@ -101,8 +103,9 @@ def predict(model, rep, single_text):
     """
     #click.echo(f"[info] {model}, {rep}")
     try:
-        TRAIN_TEXTS = pd.read_csv('data/texts_labelled.csv')
-        click.echo("Training texts loaded.")
+        if rep=='tfidf':
+            TRAIN_TEXTS = pd.read_csv('data/texts_labelled.csv')
+            click.echo("Training texts loaded.")
     except:
         # download from hosted source
         pass
