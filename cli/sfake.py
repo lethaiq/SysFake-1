@@ -1,4 +1,5 @@
 import os
+import glob
 import joblib
 import warnings
 
@@ -16,8 +17,7 @@ from pyfiglet import Figlet
 
 import feature_extraction as fe
 
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'],
-                        version_option_names=['-V', '--version'])
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 CLASS_DICT = dict(zip((1, 2, 3, 5, 7, 9, 11),
                       ('real', 'fake', 'opinion', 'polarized', 'satire', 'promotional', 'correction')))
@@ -93,10 +93,11 @@ def bert_transform(single_text):
 
                     python sfake.py --single-text \"Lorem ipsum dolor sit amet, consectetur adipiscing elit...\"""")
 @click.option('--model', '-m', default='sgd-taxonomy',
-              help="Filename of model to use for classification, in the `models` directory.")
+              type=click.Choice([os.path.split(os.path.splitext(file)[0])[-1] for file in glob.glob('models\\*[.pickle|.pkl]')]),
+              help="Filename of model to use for classification, in the `models` directory.", show_choices=True)
 @click.option('--rep', '-r', default='taxonomy', type=click.Choice(('bert', 'tfidf', 'taxonomy')), show_choices=True,
               help="Data representation you wish to use.")
-@click.version_option(prog_name='SysFake CLI', version='0.0.1')
+@click.version_option('1.1.0', '--version', '-V', prog_name='SysFake CLI')
 def predict(model, rep, single_text):
     """
     Testing whether function docstring shows up in help.
