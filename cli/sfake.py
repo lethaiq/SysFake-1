@@ -31,7 +31,7 @@ def tfidf_transform(single_text, **tfidf_kwargs):
     """
     Create a TF-IDF representation from a single text by transforming it along with all of the training texts.
     """
-    return TfidfVectorizer(**tfidf_kwargs).fit_transform(TRAIN_TEXTS['text'].to_list() + [single_text])[-1]
+    return TfidfVectorizer(**tfidf_kwargs).fit(TRAIN_TEXTS['text'].to_list())[-1]
 
 def bert_transform(single_text):
     """
@@ -105,8 +105,8 @@ def predict(model, rep, single_text):
     #click.echo(f"[info] {model}, {rep}")
     try:
         if rep=='tfidf':
-            TRAIN_TEXTS = pd.read_csv('data/texts_labelled.csv')
-            click.echo("Training texts loaded.")
+            with open('models/tfidf.pickle', mode='rb') as filein:
+                tfidf_transformer = joblib.load(filein)
     except:
         # download from hosted source
         pass
@@ -118,7 +118,7 @@ def predict(model, rep, single_text):
     try:
         with open(f'models/{model}.pickle', mode='rb') as filein:
             model_obj = joblib.load(filein)
-        click.echo("Model loaded...")
+        click.echo(f"{model} loaded...")
     except:
         raise FileNotFoundError("Model file not found in the `models` directory")
 
@@ -128,10 +128,10 @@ def predict(model, rep, single_text):
             vector = fe.ArticleVector(text=single_text).vector
             predicted_label = model_obj.predict([vector])[0]
             click.echo(f"Integer label: {predicted_label!s}, Class: {CLASS_DICT[predicted_label]}")
-        #if rep=='tfidf':
-        #    vector = tfidf_transform(single_text)
-        #    predicted_label = model_obj.predict([vector])[0]
-        #    click.echo(f"Integer label: {predicted_label!s}, Class: {CLASS_DICT[predicted_label]}")
+        if rep=='tfidf':
+            vector = tfidf_transformer.transform([single_text])
+            predicted_label = model_obj.predict(vector)[0]
+            click.echo(f"Integer label: {predicted_label!s}, Class: {CLASS_DICT[predicted_label]}")
         if rep=='bert':
             vector = bert_transform(single_text)
             predicted_label = model_obj.predict(vector)[0]
