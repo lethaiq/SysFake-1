@@ -27,12 +27,6 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 click.echo(Figlet(font='larry3d').renderText('sysfake'))
 click.echo(f"Using device: {DEVICE}")
 
-def tfidf_transform(single_text, **tfidf_kwargs):
-    """
-    Create a TF-IDF representation from a single text by transforming it along with all of the training texts.
-    """
-    return TfidfVectorizer(**tfidf_kwargs).fit(TRAIN_TEXTS['text'].to_list())[-1]
-
 def bert_transform(single_text):
     """
     Create a BERT embedding representation from a single text by passing the text through the pre-trained network.
@@ -86,16 +80,20 @@ def bert_transform(single_text):
     return document.cpu().numpy()
 
 @click.command(no_args_is_help=True)
-@click.option('--single-text', '-s', default=None,
+@click.option('--single-text', '-s', default=None, type=click.STRING,
               help="""Classify a single string enclosed in double-quotes, provided in the command line. The result will be returned in the command line.
 
                     Example:
 
                     python sfake.py --single-text \"Lorem ipsum dolor sit amet, consectetur adipiscing elit...\"""")
 @click.option('--model', '-m', default='sgd-taxonomy',
-              type=click.Choice([os.path.split(os.path.splitext(file)[0])[-1] for file in glob.glob('models\\*[.pickle|.pkl]')]),
-              help="Filename of model to use for classification, in the `models` directory.", show_choices=True)
-@click.option('--rep', '-r', default='taxonomy', type=click.Choice(('bert', 'tfidf', 'taxonomy')), show_choices=True,
+              type=click.Choice((os.path.basename(os.path.splitext(file)[0]) for file in glob.glob('models\\*[.pickle|.pkl]')),
+                                case_sensitive=True),
+              help="Filename of model to use for classification, in the `models` directory, sans file extension.",
+              show_choices=True)
+@click.option('--rep', '-r', default='taxonomy',
+              type=click.Choice(('bert', 'tfidf', 'taxonomy')),
+              show_choices=True,
               help="Data representation you wish to use.")
 @click.version_option('1.1.0', '--version', '-V', prog_name='SysFake CLI')
 def predict(model, rep, single_text):
@@ -105,7 +103,7 @@ def predict(model, rep, single_text):
     #click.echo(f"[info] {model}, {rep}")
     try:
         if rep=='tfidf':
-            with open('models/tfidf.pickle', mode='rb') as filein:
+            with open('models/tfidf/tfidf.pickle', mode='rb') as filein:
                 tfidf_transformer = joblib.load(filein)
     except:
         # download from hosted source
@@ -120,7 +118,7 @@ def predict(model, rep, single_text):
             model_obj = joblib.load(filein)
         click.echo(f"{model} loaded...")
     except:
-        raise FileNotFoundError("Model file not found in the `models` directory")
+        raise FileNotFoundError(f"{model} not found in the `models` directory")
 
     click.echo(f"Classifying {'single text' if single_text else 'new test set'} using {rep} data representation...")
     if single_text:
