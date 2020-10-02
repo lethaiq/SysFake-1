@@ -1,7 +1,7 @@
 """
 TODO: pass the pooling strategy as a command line option
 TODO: +classification report at end of prediction pipeline
-TODO: write predictions to new `.csv` or back into the original csv with a `.filter` call 
+TODO: write predictions to new `.csv` or back into the original csv with a `.filter` call
 """
 import os
 import pdb
@@ -112,7 +112,7 @@ def tfidf_transform(texts, **kwargs):
 def taxonomy_transform(texts=[], urls=[]):
     if texts is None and urls is None:
         raise ValueError("Must provide either texts, urls or both.")
-    return np.array([fe.ArticleVector(text=t, url=u).vector for t, u in zip(texts, urls)])
+    return np.array([fe.ArticleVector(text=t if t else '', url=u if u else '').vector for t, u in zip(texts, urls)])
 
 def bert_set(texts, pooling_strategy='cat', **kwargs):
     bert = partial(bert_transform, pooling_strategy=pooling_strategy)
@@ -223,6 +223,7 @@ def predict(model, rep, single_text, test_set, report):
 
     if single_text:
         click.echo(f"Integer label: {predictions[0]!s}, Class: {CLASS_DICT[predictions[0]]}")
+
     else:
         if report:
             report_string = classification_report(y_true=labels,
