@@ -243,21 +243,6 @@ def predict(model, rep, single_text, test_set, report):
         test_set_obj.to_csv("predictions/"
                              f"{os.path.basename(os.path.splitext(test_set)[0])}_{model}_"
                              f"{dt.now().strftime('%m%d%H%M')}.csv", index=False)
-        
-
-    #if single_text:
-    #    if rep=='taxonomy':
-    #        vector = fe.ArticleVector(text=single_text).vector
-    #        predicted_label = model_obj.predict([vector])[0]
-    #        click.echo(f"Integer label: {predicted_label!s}, Class: {CLASS_DICT[predicted_label]}")
-    #    if rep=='tfidf':
-    #        vector = TFIDF_TRANSFORMER.transform([single_text])
-    #        predicted_label = model_obj.predict(vector)[0]
-    #        click.echo(f"Integer label: {predicted_label!s}, Class: {CLASS_DICT[predicted_label]}")
-    #    if rep=='bert':
-    #        vector = bert_transform(single_text).cpu().numpy()
-    #        predicted_label = model_obj.predict(vector)[0]
-    #        click.echo(f"Integer label: {predicted_label!s}, Class: {CLASS_DICT[predicted_label]}")
 
 if __name__ == '__main__':
     predict()
