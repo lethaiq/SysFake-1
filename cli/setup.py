@@ -1,24 +1,27 @@
+import pathlib
+
 from setuptools import setup
+from os import path
+
+# get the setup script's parent dir
+HERE = pathlib.Path(__file__).parent
+
+# later we will use the `readme` as the basis for the long description
+#README = (HERE / "README.md").read_text()
+
+with open(path.join(HERE, 'requirements.txt'), encoding='utf-8') as filein:
+    ALL_REQS = filein.read().split('\n')
 
 setup(
-    name="SysFake CLI",
+    name="sfake",
     description="A command-line interface for the SysFake fake news classifiers.",
     author="Terence Li and Hunter S. DiCicco",
     maintainer="Hunter S. DiCicco",
-    version="1.2.8",
+    version="1.2.9",
     url='https://github.com/dicicch/SysFake/',
+    dependency_links=['https://github.com/pytorch/pytorch', 'https://github.com/pytorch/vision'],
     py_modules=['feature_extraction', 'sfake'],
+    entry_points=dict(console_scripts='sfake=sfake.py:predict'),
     include_package_data=True,
-    install_requires=['pandas', 'numpy', 'nltk',
-                      'torch', 'click', 'scikit-learn',
-                      'transformers', 'pyfiglet', 'goose3',
-                      'language_check', 'tldextract', 'pyapa',
-                      'waybackmachine'],
-    data_files=[('models', ['ksgd-BERT.pickle',
-                            'ksgd-taxonomy.pickle',
-                            'sgd-BERT.pickle',
-                            'sgd-taxonomy.pickle',
-                            'sgd-tfidf.pickle']),
-                ('models/tfidf', ['tfidf.pickle'])
-                ]
+    install_requires=ALL_REQS
 )

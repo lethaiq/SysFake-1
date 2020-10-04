@@ -28,6 +28,8 @@ from pyfiglet import Figlet
 
 import feature_extraction as fe
 
+HERE = pathlib.Path(__file__).parent
+
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 # bidirectional map between integer and string labels
@@ -44,7 +46,7 @@ REPRESENTATIONS = ('bert', 'tfidf', 'taxonomy', '')
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 try:
-    with open('models/tfidf/tfidf.pickle', mode='rb') as filein:
+    with open(os.path.join(HERE, 'models/tfidf/tfidf.pickle'), mode='rb') as filein:
         TFIDF_TRANSFORMER = joblib.load(filein)
 except:
     # download from hosted source
@@ -135,20 +137,20 @@ TRANSFORMS = dict(zip(REPRESENTATIONS, (bert_set, tfidf_transform, taxonomy_tran
 
               Its first column should be an integer index.
 
-              Its other columns should contain:
+              Its other columns should be:
 
-                    * str/int: labels
+                    * "label" [str/int]: target labels, either integer or string representation.
 
               and one or both of
 
-                    * str: raw text
+                    * "text" [str]: raw text
 
-                    * str: the text's associated URL.
+                    * "url" [str]: the text's associated URL.
 
               One column should contain raw text, the other (which should be named 'label') string labels.""")
 
 @click.option('--model', '-m', default='sgd-taxonomy',
-              type=click.Choice((os.path.basename(os.path.splitext(file)[0]) for file in glob.glob('models\\*[.pickle|.pkl]')),
+              type=click.Choice((os.path.basename(os.path.splitext(file)[0]) for file in glob.glob(os.path.join(HERE, 'models\\*[.pickle|.pkl]'))),
                                 case_sensitive=True),
               help="Filename of model to use for classification, in the `models` directory, sans file extension.",
               show_choices=True)
@@ -195,7 +197,7 @@ def predict(model, rep, single_text, test_set, report):
                                      param_hint=["--rep", "--model"])
 
     try:
-        with open(f'models/{model}.pickle', mode='rb') as filein:
+        with open(os.path.join(HERE, f'models/{model}.pickle', mode='rb')) as filein:
             model_obj = joblib.load(filein)
 
         click.echo(f"{model} loaded...")
@@ -232,17 +234,17 @@ def predict(model, rep, single_text, test_set, report):
                                                   target_names=STR_TARGETS)
             click.echo(report_string)
 
-            pathlib.Path('./reports/').mkdir(parents=True, exist_ok=True)
-            with open("reports/"
+            pathlib.Path(os.path.join(HERE, 'reports/')).mkdir(parents=True, exist_ok=True)
+            with open(os.path.join(HERE, "reports/"
                       f"{os.path.basename(os.path.splitext(test_set)[0])}_{model}_"
-                      f"{dt.now().strftime('%m%d%H%M')}.txt", mode='w') as fileout:
+                      f"{dt.now().strftime('%m%d%H%M')}.txt", mode='w')) as fileout:
                 fileout.write(report_string)
 
-        pathlib.Path('./predictions/').mkdir(parents=True, exist_ok=True)
+        pathlib.Path(os.path.join(HERE, '/predictions/')).mkdir(parents=True, exist_ok=True)
         test_set_obj['predicted'] = predictions
-        test_set_obj.to_csv("predictions/"
+        test_set_obj.to_csv( os.path.join(HERE, "predictions/"
                              f"{os.path.basename(os.path.splitext(test_set)[0])}_{model}_"
-                             f"{dt.now().strftime('%m%d%H%M')}.csv", index=False)
+                             f"{dt.now().strftime('%m%d%H%M')}.csv"), index=False)
 
 if __name__ == '__main__':
     predict()

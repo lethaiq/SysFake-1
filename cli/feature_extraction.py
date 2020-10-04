@@ -17,9 +17,11 @@ Dependencies:
 """
 
 import warnings
+import pathlib
 #import pdb
 #import os
 
+from os import path
 from collections import Counter, deque
 
 import goose3
@@ -36,6 +38,8 @@ from waybackmachine import WaybackMachine
 from waybackmachine.fetch import WaybackMachineError
 #from ap_style_checker import StyleChecker
 #from newspaper import Article
+
+HERE = pathlib.Path(__file__).parent
 
 def process_source_list(filename=""):
     """
@@ -63,9 +67,9 @@ class ArticleVector:
     ##todo: assign this based on length of features in a global config
     NUM_DIMENSIONS = 18
 
-    reputable_news_sources = process_source_list("./data/reputable_news_sources.txt")
-    satire_news_sources = process_source_list("./data/satire_news_sources.txt")
-    unreputable_news_sources = process_source_list("./data/unreputable_news_sources.txt")
+    reputable_news_sources = process_source_list(path.join(HERE, "./data/reputable_news_sources.txt"))
+    satire_news_sources = process_source_list(path.join(HERE, "./data/satire_news_sources.txt"))
+    unreputable_news_sources = process_source_list(path.join(HERE,"./data/unreputable_news_sources.txt"))
 
     ##### INSTANCE ATTRIBUTES #####
 
