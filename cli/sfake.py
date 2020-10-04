@@ -11,7 +11,6 @@ import pathlib
 import warnings
 
 from datetime import datetime as dt
-
 from functools import partial
 
 import pandas as pd
