@@ -197,7 +197,7 @@ def predict(model, rep, single_text, test_set, report):
                                      param_hint=["--rep", "--model"])
 
     try:
-        with open(os.path.join(HERE, f'models/{model}.pickle', mode='rb')) as filein:
+        with open(os.path.join(HERE, f'models/{model}.pickle'), mode='rb') as filein:
             model_obj = joblib.load(filein)
 
         click.echo(f"{model} loaded...")
