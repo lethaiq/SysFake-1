@@ -87,19 +87,40 @@ Important features that have not been implemented:
 
 57.59 percent correct overall, 645 correct out of  1120
 
-### Latest performance:
+### Best generalizable model performance:
+
+Out of 10 trials done with 5-fold randomized-parameter cross-validation.
+
+These results are from the officically supported model, which is a logistic stochastic gradient descent learner applied over the Nyström approximation of the RBF kernel of the taxonomy dataset.
 
 Recall: `tp / (tp + fn)`
 
 Precision: `tp / (tp + fp)`
 
-|                      |  real  |  fake  |  opinion  | polarized |  satire  |  promotional  |  correction  |
-|----------------------|--------|--------|---------|-----------|----------|---------------|--------------|
-| mean 20-fold recall  | 0.9989 |  1.00  |  0.998  |  0.9996   |  0.9986  |     0.9783    |    0.9998    |
-| full set recall      | 1.00   |  1.00  |  1.00   |  1.00     |  1.00    |     0.99      |    1.00      |
-| mean 20-fold precision    | 0.9984 |  1.00  |  0.9966 |  0.9994   |  0.9982  |     0.98      |    0.9995    |
-| 20-fold # misclass   | 2      |  0     |  3      |  1        |  2       |     3         |    1         |
-| full set # misclass  | 2      |  0     |  5      |  1        |  2       |     1         |    2         |
+
+|             | precision |  recall | f1-score | support
+|-------------|-----------|---------|----------|--------
+|        real |     0.55  |   0.98  |   0.71   |   319
+|        fake |     0.53  |   0.53  |   0.53   |   528
+|     opinion |     0.88  |   0.16  |   0.27   |   313
+|   polarized |     0.52  |   0.39  |   0.44   |   383
+|      satire |     0.49  |   0.79  |   0.61   |   204
+| promotional |     0.00  |   0.00  |   0.00   |    22
+|                                                       |
+|    accuracy |           |         |   0.54   |  1769
+|   macro avg |     0.50  |   0.48  |   0.43   |  1769
+|weighted avg |     0.58  |   0.54  |   0.50   |  1769
+
+And the associated confusion matrix:
+
+|            | real | fake | opinion | polarized | satire | promotional |
+|------------|------|------|---------|-----------|--------|-------------|
+|real        |  312 |   4  |    0    |     3     |    0   |     0       |
+|fake        |   86 | 282  |    0    |   114     |   46   |     0       |
+|opinion     |  132 |  42  |   51    |     9     |   79   |     0       |
+|polarized   |   25 | 183  |    5    |   148     |   22   |     0       |
+|satire      |   11 |  20  |    2    |     9     |  162   |     0       |
+|promotional |    0 |   0  |    0    |     0     |   22   |     0       |
 
 ## Usage guide:
 
@@ -109,13 +130,13 @@ In order to use the classifier, first you must collect data. To do this use the 
 2. svm_predictions = classifier.run_predictions(support_vector_machine, test_X_uncombined, test_Y_uncombined)
 3. get_statistics(test_Y_uncombined, svm_predictions)
 4. validate(support_vector_machine, test_X_uncombined, test_Y_uncombined)
-^^these lines of code will be how you run the classifier for validation. 
+^^these lines of code will be how you run the classifier for validation.
 
 ***Important note***
 data is separated out into urls, vectors, and then split into training and testing. **There is currently no centralized collection of data** (this will be rectified soon). For example "Fake News" data will have 5 files:
 
 1. fake_news_urls-testing.txt - text file with fake news urls separated by spaces for testing 
-2. fake_news_urls-training.txt - text file with fake news urls separated by spacesA for training
+2. fake_news_urls-training.txt - text file with fake news urls separated by spaces for training
 3. fake_news_urls.txt - All fake news URLs compiled into one text file.
 4. fake_news_vectors-testing.txt - The corresponding fake news testing URLs, from fake_news_urls-testing but vectorized into their respective features.
 5. fake_news_vectors-training.txt - The corresponding fake news training URLs, from fake_news_urls-training but vectorized into their respective features.
