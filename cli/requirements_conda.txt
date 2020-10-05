@@ -1,0 +1,8 @@
+pandas
+numpy
+nltk
+click
+joblib
+scikit-learn
+pyfiglet
+tldextract
