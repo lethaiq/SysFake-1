@@ -237,7 +237,7 @@ def predict(model, rep, single_text, test_set, report):
             pathlib.Path(os.path.join(HERE, 'reports/')).mkdir(parents=True, exist_ok=True)
             with open(os.path.join(HERE, "reports/"
                       f"{os.path.basename(os.path.splitext(test_set)[0])}_{model}_"
-                      f"{dt.now().strftime('%m%d%H%M')}.txt", mode='w')) as fileout:
+                      f"{dt.now().strftime('%m%d%H%M')}.txt"), mode='w') as fileout:
                 fileout.write(report_string)
 
         pathlib.Path(os.path.join(HERE, '/predictions/')).mkdir(parents=True, exist_ok=True)

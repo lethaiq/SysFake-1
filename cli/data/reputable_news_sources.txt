@@ -181,7 +181,7 @@ Independent Record (Montana)
 Independent Voter Network (IVN)
 India Today
 Inland Valley Daily Bulletin
-Institute for Women’s Policy Research (IWPR)
+Institute for Womenâ€™s Policy Research (IWPR)
 Investigative Reporters and Editors
 International Consortium of Investigative Journalists
 International Energy Agency
@@ -222,7 +222,7 @@ Metabunk
 MetroWest Daily News
 Military.com
 Missoulian
-MLive (Michigan – Booth Newspapers)
+MLive (Michigan â€“ Booth Newspapers)
 Montana Standard
 Napa Valley Register
 National Bureau of Economic Research (NBER)
@@ -306,7 +306,7 @@ SmartNews
 Snopes
 South Bend Tribune
 Southwest Times Record
-Spectrum News – NY1
+Spectrum News â€“ NY1
 Spectrum Report
 St. Cloud Times
 Stars and Stripes
@@ -324,7 +324,7 @@ Task and Purpose
 Telegram & Gazette
 Texas Standard
 Texas Tribune
-That’s Nonsense
+Thatâ€™s Nonsense
 The Auburn Citizen
 The Balance
 The Baxter Bulletin
@@ -416,7 +416,7 @@ Vote Smart
 Waco Tribune-Herald
 War on the Rocks
 Washington Journal
-Washington’s Top News (WTOP)
+Washingtonâ€™s Top News (WTOP)
 Waterloo-Cedar Falls Courier
 We Are The Mighty
 WikiNews
@@ -547,7 +547,7 @@ Dawn
 DCReport.org
 Deadline Hollywood
 Deccan Herald
-Delaware Online – News Journal
+Delaware Online â€“ News Journal
 Democracy 21
 Democrat and Chronicle
 Demos
@@ -666,7 +666,7 @@ Lexington Herald Leader
 Liberal Mountain
 Lifehacker
 Liveleak
-Maclean’s Magazine
+Macleanâ€™s Magazine
 Maine Beacon
 Mainichi Shimbun
 Malaysiakini
@@ -694,7 +694,7 @@ Mothership
 Mountain Democrat
 MSN
 Muncie Voice
-MWC News – Media with Conscience
+MWC News â€“ Media with Conscience
 Naked Capitalism
 Naples Daily News
 National Association for the Advancement of Colored People (NAACP)
@@ -729,7 +729,7 @@ NPR
 New York Times
 OC Weekly
 Odyssey Online
-Oil and Water Don’t Mix
+Oil and Water Donâ€™t Mix
 openDemocracy
 Opposing Views
 OneIndia
@@ -763,7 +763,7 @@ Raleigh News & Observer
 RationalWiki
 Religion News Service
 Reno Gazette Journal
-Reveal – Center for Investigative Journalism
+Reveal â€“ Center for Investigative Journalism
 Right Web
 Roanoke Times
 Roosevelt Institute
@@ -800,7 +800,7 @@ Stocks News Daily
 StopFake
 St. Paul Pioneer Press
 Stuff
-SWI – Swissinfo.ch
+SWI â€“ Swissinfo.ch
 Syrian Observatory for Human Rights (SOHR)
 Tablet Magazine
 Tax Justice Network
@@ -875,7 +875,7 @@ The Verge
 The Virginian Pilot
 The Week UK
 The Wilderness Society
-The Wire – India
+The Wire â€“ India
 The Zero Hour
 Thomson Reuters Foundation
 Thrillist

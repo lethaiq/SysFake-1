@@ -1,0 +1,12 @@
+              precision    recall  f1-score   support
+
+        real       0.00      0.00      0.00         3
+        fake       0.00      0.00      0.00         3
+     opinion       0.25      0.33      0.29         3
+   polarized       0.00      0.00      0.00         0
+      satire       0.00      0.00      0.00         0
+ promotional       0.00      0.00      0.00         0
+
+    accuracy                           0.11         9
+   macro avg       0.04      0.06      0.05         9
+weighted avg       0.08      0.11      0.10         9
