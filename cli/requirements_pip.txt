@@ -1,4 +1,4 @@
-language_check
+language_tool_python
 waybackmachine
 transformers
 goose3

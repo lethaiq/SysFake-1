@@ -7,7 +7,7 @@ for scraping and vectorizing news articles as both URLs and given text.
 
 Dependencies:
 -------------
-* language_check
+* language_tool_python
 * tldextract
 * nltk
 * sklearn
@@ -25,7 +25,7 @@ from os import path
 from collections import Counter, deque
 
 import goose3
-import language_check
+import language_tool_python
 import tldextract
 #import requests
 import nltk
@@ -139,7 +139,7 @@ class ArticleVector:
         returns the number of grammar mistakes of the article divided by the length of the article
         '''
 
-        checker = language_check.LanguageTool('en-US')
+        checker = language_tool_python.LanguageTool('en-US')
         matches = checker.check(self.text) # of grammar errors
         return len(matches) / self.num_words
 
