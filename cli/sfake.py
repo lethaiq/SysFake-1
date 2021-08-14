@@ -45,7 +45,7 @@ REPRESENTATIONS = ('bert', 'tfidf', 'taxonomy')
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 try:
-    with open(os.path.join(HERE, 'models/tfidf/tfidf.pickle'), mode='rb') as filein:
+    with open(os.path.join(HERE, 'models2/tfidf/tfidf.pickle'), mode='rb') as filein:
         TFIDF_TRANSFORMER = joblib.load(filein)
 except:
     pass
