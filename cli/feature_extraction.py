@@ -54,7 +54,7 @@ def process_source_list(filename=""):
         delimiter: str
             Character which separates discrete items in the text file.
     """
-    with open(filename, mode='r') as filein:
+    with open(filename, mode='r', encoding='cp1252') as filein:
         list_before_processing = filein.readlines()
         return [j.replace(" ", "").lower().strip()
                 for i, j in enumerate(list_before_processing)]
