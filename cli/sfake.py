@@ -40,7 +40,7 @@ STR_TARGETS = tuple(CLASS_DICT.values())
 # next: update the dict with its own inverse for str -> int
 CLASS_DICT.update({v:k for k, v in CLASS_DICT.items()})
 
-REPRESENTATIONS = ('bert', 'tfidf', 'taxonomy', '')
+REPRESENTATIONS = ('bert', 'tfidf', 'taxonomy')
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -106,6 +106,7 @@ def predict(single_text, model='svc-tfidf', rep="tfidf", test_set=None, report=F
         transformed_text = TRANSFORMS[rep](texts=test_set_obj['text'], urls=test_set_obj['url'])
         labels = test_set_obj['label']
     else:
+        print(TRANSFORMS[rep])
         transformed_text = TRANSFORMS[rep](texts=test_set_obj, urls=['']).reshape(1,-1)
 
     predictions = model_obj.predict(transformed_text)
