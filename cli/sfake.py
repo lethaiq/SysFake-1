@@ -93,8 +93,7 @@ def bert_set(texts, pooling_strategy='cat', **kwargs):
 TRANSFORMS = dict(zip(REPRESENTATIONS, (bert_set, tfidf_transform, taxonomy_transform)))
 
 
-def predict(model, rep="tfidf", single_text, test_set, report):
-    model = 'svc-tfidf'
+def predict(single_text, model='svc-tfidf', rep="tfidf", test_set=None, report=False):
     with open(os.path.join(HERE, f'models/{model}.pickle'), mode='rb') as filein:
         model_obj = joblib.load(filein)
     print(f"{model} loaded...")
@@ -136,4 +135,4 @@ def predict(model, rep="tfidf", single_text, test_set, report):
                              f"{dt.now().strftime('%m%d%H%M')}.csv"), index=False)
 
 if __name__ == '__main__':
-    predict()
+    predict('dummy text')
