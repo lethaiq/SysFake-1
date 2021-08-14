@@ -45,7 +45,7 @@ REPRESENTATIONS = ('bert', 'tfidf', 'taxonomy')
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 try:
-    with open(os.path.join(HERE, 'models2/tfidf/tfidf.pickle'), mode='rb') as filein:
+    with open(os.path.join(HERE, 'models/tfidf/tfidf.pickle'), mode='rb') as filein:
         TFIDF_TRANSFORMER = joblib.load(filein)
 except:
     pass
@@ -93,8 +93,8 @@ def bert_set(texts, pooling_strategy='cat', **kwargs):
 TRANSFORMS = dict(zip(REPRESENTATIONS, (bert_set, tfidf_transform, taxonomy_transform)))
 
 
-def predict(single_text, model='svc-tfidf', rep="tfidf", test_set=None, report=False):
-    with open(os.path.join(HERE, f'models2/{model}.pickle'), mode='rb') as filein:
+def predict(single_text, model='sgd-tfidf', rep="tfidf", test_set=None, report=False):
+    with open(os.path.join(HERE, f'models/{model}.pickle'), mode='rb') as filein:
         model_obj = joblib.load(filein)
     print(f"{model} loaded...")
 
