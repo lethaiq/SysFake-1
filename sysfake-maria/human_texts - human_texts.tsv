@@ -1,0 +1,36 @@
+	label		url
+0	1	Real News	https://www.cnn.com/2020/05/12/health/us-coronavirus-testing-per-capita/index.html
+1	1	Real News	https://apnews.com/f18aadd2d6a2868c3765a02c2c9dfa13
+2	1	Real News	https://www.nytimes.com/2020/05/29/technology/trump-twitter-minneapolis-george-floyd.html
+3	1	Real News	https://www.bbc.com/news/world-us-canada-52557291
+4	1	Real News	https://popular.info/p/amazon-soliciting-public-donations-141
+5	1	Real News	https://www.nydailynews.com/news/politics/melania-ivanka-jared-mayoral-election-votes-didn-count-article-1.3692124
+13	2	False News	https://web.archive.org/web/20200601103700/https://w24n.com/minneapolis-police-officer-who-killed-george-floyd-derek-chauvin-commits-suicide-in-prison-cell/
+14	2	False News	https://web.archive.org/web/20200430182051/https://dailyboulder.com/trumps-new-idea-to-profit-100-covid-19-commemorative-coins/
+15	2	False News	https://web.archive.org/web/20200424225130/https://childrenshealthdefense.org/news/vaccine-misinformation-flu-shots-equal-health/
+16	2	False News	https://archive.is/uGHEb
+18	2	False News	https://nypost.com/2020/05/22/firefighters-hand-sanitizer-can-explode-in-your-car-this-summer/
+26	3	Commentary	https://www.cnn.com/2020/06/12/opinions/coronavirus-mutation-increased-infectivity-haseltine/index.html
+27	3	Commentary	https://www.cnn.com/2020/06/11/opinions/time-pence-jump-ship-opinion-dantonio/index.html
+28	3	Commentary	https://www.theguardian.com/commentisfree/2019/jan/20/marijuana-cannabis-health-effects-issues-mental-health-disorders-science
+29	3	Commentary	https://www.theguardian.com/commentisfree/2020/jun/13/silicon-valley-has-admitted-facial-recognition-technology-is-toxic-about-time
+30	3	Commentary	https://www.usatoday.com/story/opinion/2020/06/11/stock-market-booms-as-covid-causes-mass-unemployment-column/5325786002/
+31	3	Commentary	https://www.usatoday.com/story/opinion/2020/06/11/online-learning-inequality-crisis-fix-digital-divide-column/5326592002/,
+39	5	Polarized	https://www.nationalreview.com/2020/06/trump-administration-reverses-obama-era-regulation-that-redefined-sex/,
+40	5	Polarized	https://dailycaller.com/2020/06/19/tucker-carlson-twitter-youtube-censorship-dissent/,
+41	5	Polarized	https://www.breitbart.com/social-justice/2020/06/20/david-harris-jr-movement-to-tear-down-statues-is-anti-everything-that-is-our-country/,
+42	5	Polarized	https://www.thedailybeast.com/local-businesses-love-the-domestic-terror-autonomous-zone-in-seattle-actually?ref=home,
+43	5	Polarized	https://slate.com/news-and-politics/2020/06/warrior-cop-trainings-industry.html,
+44	5	Polarized	https://www.motherjones.com/politics/2020/06/donald-trump-loans-deutsche-bank/
+52	7	Satire	https://babylonbee.com/news/pelosi-rips-up-bible
+53	7	Satire	https://worldnewsdailyreport.com/florida-teen-stung-over-600-times-after-inserting-his-penis-inside-of-beehive/
+54	7	Satire	https://www.duffelblog.com/2014/12/army-military-working-dogs/
+55	7	Satire	https://web.archive.org/web/20200630111931/https://wearethellod.com/another-one-for-mike/
+56	7	Satire	https://www.gishgallop.com/area-skydiver-caught-by-737-dragged-for-200-miles/
+57	7	Satire	https://obamawatcher.com/2020/03/michelles-fake-degrees/
+65	9	Persuasive Content	https://www.businessinsider.com/sc/how-to-create-a-direct-to-consumer-strategy-2020-6
+66	9	Persuasive Content	https://www.inc.com/verizon/the-new-security-challenge-for-small-and-medium-businesses-in-the-covid-work-from-home-model-mobile-technology.html
+67	9	Persuasive Content	https://nationalpost.com/sponsored/food-drink-sponsored/say-cheese-with-these-treasured-recipes-from-canadian-home-cooks-and-chefs
+70	9	Persuasive Content	https://sports.yahoo.com/mango-non-medical-cloth-face-masks-131029466.html
+71	9	Persuasive Content	https://www.automotiveworld.com/news-releases/toyota-west-virginia-rolls-its-first-hybrid-transaxle-off-production-line-represents-226-million-investment-in-the-plant/
+77	9	Persuasive Content	https://www.usda.gov/media/press-releases/2020/06/10/usda-ensures-all-kids-can-get-free-meals-summer-nation-reopens

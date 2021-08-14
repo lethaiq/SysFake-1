@@ -92,7 +92,6 @@ def bert_set(texts, pooling_strategy='cat', **kwargs):
 
 TRANSFORMS = dict(zip(REPRESENTATIONS, (bert_set, tfidf_transform, taxonomy_transform)))
 
-
 def predict(single_text, model='sgd-taxonomy', rep="taxonomy", test_set=None, report=False):
     with open(os.path.join(HERE, f'models/{model}.pickle'), mode='rb') as filein:
         model_obj = joblib.load(filein)
